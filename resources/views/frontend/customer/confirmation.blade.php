@@ -56,11 +56,15 @@
                                      <div class="col-12 text-center mb-5">
                                          <h1>Registration Successful</h1>
                                      </div>
-                                     <div class="col-12 text-center">
-                                         <p>
-                                             Greetings from Deluxewood Cabinetry! We appreciate your registration. Your request is now under review by our team. Kindly grant us a little time to assess and process your submission. Thank you for choosing Deluxewood Cabinetry.
-                                         </p>
-                                     </div>
+                                     <div class="col-12 text-center" style="padding: 30px; background-color: #f8f9fa; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); max-width: 600px; margin: 20px auto;">
+    <p style="line-height: 1.8; margin-bottom: 15px; font-family: Arial, sans-serif; font-size: 16px; color: #333;">
+        Greetings from Deluxewood Cabinetry! <br>
+        We appreciate your registration. <br>
+        Your request is now under review by our team. <br>
+        Kindly grant us a little time to assess and process your submission. <br>
+        Thank you for choosing Deluxewood Cabinetry.
+    </p>
+</div>
                                      <div class="col-12 text-center mt-4">
                                          <a href="{{url('/')}}" class="btn btn-lg btn-block btn-light lift text-uppercase">Return to Home</a>
                                      </div>

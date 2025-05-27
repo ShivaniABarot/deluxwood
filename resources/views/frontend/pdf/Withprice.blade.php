@@ -598,39 +598,48 @@
                      <td class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px;' : '' }}">{{$taxGroup->tax_rate}}%</td>
                   </tr>
                   @endif -->
-                  @if($taxGroup->tax_group == "With Tax" )
-                     @if($customer_draft->service_type == "Self Pickup")
-                     <tr>
-                        <td colspan="3" class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px; width: 70%;' : '' }}">Tax </td>
-                        <td class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px;' : '' }}">{{$taxRate}}%</td>
-                     </tr>
-                     @elseif($customer_draft->service_type == "Curbside Delivery")
-                        @php
-                      
-                           $taxRate = $customer_draft->zipcode_tax_rate;
-                              if($taxRate == null){
-                                 $taxRate = 0;
-                              }
-                        @endphp
-                        <tr>
-                           <td colspan="3" class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px; width: 70%;' : '' }}">Tax </td>
-                           <td class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px;' : '' }}">{{$taxRate}}%</td>
-                        </tr>
-                     @else
-                        @php
-                        
-                        $taxRate = $customer_draft->zipcode_tax_rate;
-                           if($taxRate == null){
-                              $taxRate = 0;
-                           }
-                        @endphp
-                        <tr>
-                           <td colspan="3" class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px; width: 70%;' : '' }}">Tax</td>
-                           <td class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px;' : '' }}">{{$taxRate}}%</td>
-                        </tr>
-                     @endif
-                    
-                  @endif 
+                  @if($taxGroup->tax_group == "With Tax")
+    @if($customer_draft->service_type == "Self Pickup")
+        <tr>
+            <td colspan="3" class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px; width: 70%;' : '' }}">Tax</td>
+            <td class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px;' : '' }}">{{$taxRate}}%</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="prc_cls" style="width: 70%;">Tax Amount</td>
+            <td class="prc_cls">${{ number_format($taxGroupDiscount, 2, '.', '') }}</td>
+        </tr>
+    @elseif($customer_draft->service_type == "Curbside Delivery")
+        @php
+            $taxRate = $customer_draft->zipcode_tax_rate;
+            if($taxRate == null){
+                $taxRate = 0;
+            }
+        @endphp
+        <tr>
+            <td colspan="3" class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px; width: 70%;' : '' }}">Tax</td>
+            <td class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px;' : '' }}">{{$taxRate}}%</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="prc_cls" style="width: 70%;">Tax Amount</td>
+            <td class="prc_cls">${{ number_format($taxGroupDiscount, 2, '.', '') }}</td>
+        </tr>
+    @else
+        @php
+            $taxRate = $customer_draft->zipcode_tax_rate;
+            if($taxRate == null){
+                $taxRate = 0;
+            }
+        @endphp
+        <tr>
+            <td colspan="3" class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px; width: 70%;' : '' }}">Tax</td>
+            <td class="prc_cls" style="{{ ($customer_draft->configuration != 'Unassembled' && $customer_draft->discount == 0) ? 'padding-top: 7px;' : '' }}">{{$taxRate}}%</td>
+        </tr>
+        <tr>
+            <td colspan="3" class="prc_cls" style="width: 70%;">Tax Amount</td>
+            <td class="prc_cls">${{ number_format($taxGroupDiscount, 2, '.', '') }}</td>
+        </tr>
+    @endif
+@endif
                   @php $discountedPrice += $shippingCost; @endphp
                   @if($shippingCost != 0 )
                   <tr>
