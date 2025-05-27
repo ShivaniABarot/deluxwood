@@ -1,0 +1,229 @@
+table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before, 
+table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before{
+ 
+    background-color:#dca53e!important;
+ 
+}
+body {
+    background-color: #ffffff!important;
+}
+.navbar > .container-xxl
+{
+    margin-top: -17px;
+}
+a:hover
+{
+    color: #dca53e!important;
+}
+.btn.btn-dark:hover
+{
+    color: #FFFFFF!important;
+}
+.page-link:hover
+{
+    color: #FFFFFF!important;   
+}
+.size-block .filter-size ul li:hover
+{
+    background-color: #101010;
+    border-color: #101010;
+    color: #fff;
+}
+.icofont-rounded-down:before
+{
+    margin-right: 10px;
+}
+ .breadcrumb
+    {
+        padding: 13px 10px 15px 19px!important;
+    }
+.btn-light {
+    background-color: #dca53e;
+    border-radius: 10px;
+}
+
+.btn {
+    color: white !important;
+    font-style: bold;
+}
+.db_cls
+{
+    color: #101010!important;
+}
+.form-control:focus
+{
+    border-color: #dca53e;
+}
+.form-control
+{
+    font-size: 13px;
+    padding: 6px 10px 6px 10px;
+}
+.btn-light:hover {
+    color: white;
+    background-color: #dca53e;
+    border-color: #f9fafb;
+}
+.sidebar {
+    transition: ease 0.1s;
+    background: #fafafa !important;
+    z-index: 99999;
+    margin: 25px;
+    height: calc(100vh - 50px);
+    width: 260px;
+    flex-grow: 0;
+    border-radius: 1.1rem;
+    order: 1;
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+.page-link:focus
+{
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px!important; 
+}
+.sidebar .menu-list .m-link span
+{
+    color: #101010!important;
+}
+.text-secondary
+{
+   color: #dca53e!important; 
+}
+.sd_cls
+{
+    color: #DCA53E!important;
+}
+.sidebar .menu-list .m-link
+{
+    padding-top: 15px;
+    color: #101010!important;
+}
+.sub-menu .ms-link span
+{
+    color: #101010!important; 
+}
+.sidebar .menu-list .m-link.active
+{
+    background-color: #000000;
+    padding: 8px 20px 10px 20px;
+    border-radius: 10px;
+    margin-top: 10px;
+    margin-bottom: 7px;
+}
+.sidebar .menu-list .m-link.active span
+{
+     color: #fafafa!important; 
+}
+.sidebar .menu-list .m-link.active .icofont-rounded-down:before
+{
+    margin-right: -9px;
+}
+.sidebar .menu-list .m-link.active i
+{
+/*    margin-left: 1px;*/
+    color: #fafafa!important;
+}
+.sidebar .menu-list .ms-link.active span 
+{
+    color: #dca53e!important;
+}
+.btn.btn-primary
+{
+    background-color: #dca53e;
+    border-color: #dca53e;
+}
+.text-primary
+{
+    color: #dca53e !important;
+}
+.page-item.active .page-link
+{
+    background-color: #dca53e;
+    border-color: #dca53e;
+}
+.page-item .page-link
+{
+    color: #dca53e;
+}
+.btn-warning
+{
+   background-color: #dca53e;
+    border-color: #dca53e; 
+}
+.page-item .page-link:hover
+{
+    color: #dca53e!important;
+}
+.page-item.active .page-link:hover{
+    color: #FFFFFF!important;
+}
+.btn-warning:hover
+{
+    background-color: #dca53e;
+    border-color: #dca53e; 
+}
+.btn-warning:focus
+{
+    background-color: #dca53e;
+    border-color: #dca53e;    
+}
+.btn-warning:focus
+{
+    box-shadow: 0 0 0 0.25rem rgb(220 165 62);
+}
+.btn-warning:active
+{
+    background-color: #dca53e;
+    border-color: #dca53e;    
+}
+.btn-dark:focus
+{
+    box-shadow: 0 0 0 0.25rem rgb(220 165 62);
+}
+.btn.btn-outline-secondary:hover
+{
+    background-color: #dca53e;
+}
+.btn-outline-secondary:focus
+{
+    box-shadow: 0 0 0 0.25rem rgb(220 165 62);
+}
+.text-warning
+{
+    color: #dca53e!important;
+}
+.btn-outline-warning:hover
+{
+     background-color: #dca53e!important;
+    border-color: #dca53e!important;
+}
+.btn-outline-warning:focus
+{
+     box-shadow: 0 0 0 0.25rem rgb(220 165 62);
+}
+.btn-dark
+{
+    background-color: #dca53e!important;
+    border-color: #dca53e!important;
+}
+.btn-light:active
+{
+    background-color: #dca53e!important;
+    border-color: #dca53e!important;
+}
+.btn-light:focus
+{
+     background-color: #dca53e!important;
+    border-color: #dca53e!important;
+
+}
+.nav-tabs.tab-body-header .nav-link.active
+{
+     background-color: #dca53e!important;
+}
+.nav-tabs.tab-card .nav-link.active
+{
+    border-color: #dca53e!important;
+}
+.tawk-min-container{
+    display: none !important;
+}
