@@ -84,7 +84,7 @@
 							<div class="card">
 								<div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
 									<div class="left-info">
-									<div><span class="fs-6 fw-bold me-2">Draft : {{$data->customer_draft_id}}</span></div>
+									<div><span class="fs-6 fw-bold me-2">Draft :  {{ $data->customer_draft_id }}</span></div>
 									<table>
 										<tr>
 											<!-- First Column - Second Row -->

@@ -161,11 +161,11 @@
          <div>
             <div style="width: 100%;">
                <div style="width: 40%;display: inline-block;">
-                  <img src="{{asset('public/logo.png')}}" class="lg_cls">
+               <img src="{{ public_path('logo.png') }}" class="lg_cls" alt="Logo"> 
                </div>
                <div style="width: 18%;display: inline-block;"></div>
                <div class="bllvr_cls" style="width: 40%; display: inline-block; ">
-                  <p class="title" style="border-bottom: 1px solid #000000; padding: 0px 3px 7px 13px;font-size: 16px;font-weight: Bold;">Sales Order - #{{$customer_draft_Id}}</p>
+                  <p class="title" style="border-bottom: 1px solid #000000; padding: 0px 3px 7px 13px;font-size: 16px;font-weight: Bold;">Sales Order - DW- {{$customer_draft_Id}}</p>
                   <p class="fn_cls">420 Frontage Rd, West Haven<br>CT 06516, USA<br><b>Email:</b> info@deluxewoodcabinetry.com<br><b>Phone:</b> (475) 655-2687</p>
                </div>
             </div>
@@ -482,45 +482,52 @@
                </ul>
             </p> -->
             <!-- changes end on 10/10/2024 -->
-            <div class="thn_cls" style="font-size: 13px;">
-               <b>Terms & Conditions:</b> 
-               <br>
-               <p style="font-size: 12px;padding-left:20px;"><b> Order Processing : </b></p>
-               <ul  style="font-size: 11px; padding-left:50px;">
-                  <li > Orders received after 10 AM will be processed the next business day.</li>  
-               </ul>
-               <p style="font-size: 12px;padding-left:20px;"><b>Pick-Up Orders : </b></p>
-               <ul  style="font-size: 11px; padding-left:50px;">
-                  <li >Processed orders will be ready for pick-up within 3-5 business days (excluding holidays). Please ensure that pick-ups occur on the scheduled day, as delayed pick-ups will incur a storage fee of $50 per day.</li>
-               </ul>
-               <p style="font-size: 12px;padding-left:20px;"><b>Shipping Orders : </b></p>
-               <ul  style="font-size: 11px; padding-left:50px;">
-                  <li >Processed orders will ship within 7-10 business days (excluding holidays). Orders shipping outside of CT, NY, and NJ may incur additional delivery fees. For shipping to locations outside these areas, please contact our team to confirm applicable charges.</li>
-               </ul>
-               <p style="font-size: 12px;padding-left:20px;">Additional Shipping Charges :</p>
-               <ul  style="font-size: 11px; padding-left:50px;">
-               <li>15-18 boxes: $50</li>
-                  <li>19-25 boxes: $150</li>
-                  <li>26-36 boxes: $250</li>
-                  <li>37-50 boxes: $450</li>
-               </ul>
-               <p style="font-size: 12px;padding-left:20px;"><b>Inventory Confirmation : </b></p>
-               <ul  style="font-size: 11px; padding-left:50px;">
-                  <li > Inventory availability will be confirmed after your order is received. If an item is out of stock, our team will notify you immediately.</li>
-               </ul>
-               <p style="font-size: 12px;padding-left:20px;"><b>Special Lead Times : </b></p>
-               <ul  style="font-size: 11px; padding-left:50px;">
-                  <li >Slab doors have a lead time of 4-6 weeks.</li>
-                  <li>Beveled Shaker Grey cabinets require an additional 3 days for processing.</li>
-               </ul>
-               <p style="font-size: 12px;padding-left:20px;"><b>Return Policy : </b></p>
-               <ul  style="font-size: 11px; padding-left:50px;">
-                  <li > All sales are final, and Deluxe Wood Cabinetry does not accept returns on any merchandise. However, if you receive incorrect or damaged items, please report them within 72 hours to qualify for a replacement at no cost.</li>
-                  <li>In rare cases where a return is authorized, a 25% restocking fee will apply.</li>
-               </ul>
-               <p style="font-size: 12px;padding-left:20px;"><b>Thank you for choosing Deluxe Wood Cabinetry!    </b></p>
-               
-      </div>
+            <div class="thn_cls" style="font-size: 12px; line-height: 1.4;">
+  <b>Terms & Conditions:</b><br>
+  
+  <b>Order Processing:</b>
+  <ul style="margin: 0 0 5px 20px; padding: 0;">
+    <li>Orders received after 10 AM will be processed the next business day.</li>
+  </ul>
+
+  <b>Pick-Up Orders:</b>
+  <ul style="margin: 0 0 5px 20px; padding: 0;">
+    <li>Ready in 3–5 business days (excl. holidays). Late pick-ups incur a $50/day storage fee.</li>
+  </ul>
+
+  <b>Shipping Orders:</b>
+  <ul style="margin: 0 0 5px 20px; padding: 0;">
+    <li>Ship in 7–10 business days. Extra fees apply outside CT, NY, NJ. Contact us for more info.</li>
+  </ul>
+
+  <b>Additional Shipping Charges:</b>
+  <ul style="margin: 0 0 5px 20px; padding: 0;">
+    <li>15–18 boxes: $50</li>
+    <li>19–25 boxes: $150</li>
+    <li>26–36 boxes: $250</li>
+    <li>37–50 boxes: $450</li>
+  </ul>
+
+  <b>Inventory Confirmation:</b>
+  <ul style="margin: 0 0 5px 20px; padding: 0;">
+    <li>We’ll confirm availability after order receipt. Out-of-stock items will be communicated.</li>
+  </ul>
+
+  <b>Special Lead Times:</b>
+  <ul style="margin: 0 0 5px 20px; padding: 0;">
+    <li>Slab doors: 4–6 weeks lead time.</li>
+    <li>Beveled Shaker Grey: +3 days processing.</li>
+  </ul>
+
+  <b>Return Policy:</b>
+  <ul style="margin: 0 0 5px 20px; padding: 0;">
+    <li>All sales final. Report incorrect/damaged items within 72 hours for free replacement.</li>
+    <li>If a return is authorized, a 25% restocking fee applies.</li>
+  </ul>
+
+  <b>Thank you for choosing Deluxe Wood Cabinetry!</b>
+</div>
+
          </div>
          </div>
          <!-- <div style="width: 40%; padding-top: 15px;display: inline-block; margin-left:420px;" class="float-left">
