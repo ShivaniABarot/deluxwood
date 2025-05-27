@@ -111,37 +111,73 @@ class DoorStyleController extends BaseController {
 		return view('backend.door_style.edit',compact('pagename','door_style'));
 	}
 	
-    public function update(DoorStyleForm  $request,$id){
-        if($request->ajax()){
-            return true;
+    public function update(DoorStyleForm $request, $id)
+{
+    try {
+        // Validate the request is AJAX if needed
+        if ($request->ajax()) {
+            return response()->json(['success' => true]);
         }
-        $door_style = DoorStyle::find($id); 
-        if($request->hasfile('image'))
-        {
-           
+
+        // Find the DoorStyle or throw 404
+        $door_style = DoorStyle::findOrFail($id);
+
+        // Handle image upload
+        if ($request->hasFile('image')) {
             $file = $request->file('image');
-            $extension = $file->getClientOriginalExtension();
-            $filename = rand().'.'.$extension;
+            $extension = strtolower($file->getClientOriginalExtension());
 
-            if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
-                return back()->withErrors(['image' => 'Only JPG and PNG files are allowed.']);
+            // Validate image extension
+            if (!in_array($extension, ['jpg', 'jpeg', 'png'])) {
+                return redirect()->back()->withErrors(['image' => 'Only JPG and PNG files are allowed.']);
             }
-        
-            $file->move('public/img/door_style',$filename);
-            $door_style->image=$filename;
 
+            // Generate unique filename
+            $filename = time() . '_' . uniqid() . '.' . $extension;
+            $file->move(public_path('img/door_style'), $filename);
+
+            // Delete old image if it exists
+            if ($door_style->image && file_exists(public_path('img/door_style/' . $door_style->image))) {
+                unlink(public_path('img/door_style/' . $door_style->image));
+            }
+
+            $door_style->image = $filename;
         }
-        $door_style->name = $request->name;
-        $door_style->line = $request->line;
-        $door_style->description = $request->description;
-        $door_style->assemble_options=$request->assemble_options;
-       
-       if($door_style->save()){
-        return redirect('/admin/door-style-list')->with('success','Door Style Updated  Successfully');
-       }else{
-        return redirect('/admin/door-style-list')->with('error', 'Error: Something went wrong. Please try again.');
-       }
-           
+
+        // Update door style attributes
+        $door_style->fill([
+            'name' => $request->name,
+            'line' => $request->line,
+            'description' => $request->description,
+            'assemble_options' => $request->assemble_options,
+        ]);
+
+        // Force mark assemble_options as dirty if it has changed
+        if ($door_style->isDirty('assemble_options')) {
+        } else {
+            \Log::warning('assemble_options not marked as dirty', [
+                'original' => $door_style->getOriginal('assemble_options'),
+                'new' => $request->assemble_options,
+            ]);
+            $door_style->assemble_options = $request->assemble_options;
         }
+
+        // dd(123 ,$request->assemble_options);
+
+        // Save and redirect
+        if ($door_style->save()) {
+            return redirect('/admin/door-style-list')
+                ->with('success', 'Door Style Updated Successfully');
+        }
+
+        return redirect('/admin/door-style-list')
+            ->with('error', 'Error: Failed to update door style.');
+
+    } catch (\Exception $e) {
+        \Log::error('Error updating door style: ' . $e->getMessage());
+        return redirect('/admin/door-style-list')
+            ->with('error', 'Error: Something went wrong. Please try again.');
+    }
+}
       
 }

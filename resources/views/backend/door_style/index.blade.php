@@ -41,8 +41,9 @@
 								<td><strong>{{$val->doorStyle_id}}</strong></td>
 								<td>{{$val->name}}</td>
 								<td data-bs-toggle="tooltip" data-bs-placement="top" title="{{$val->description}}">{{ Str::limit($val->description, 25) }}</td>
-								<td><img class="userimage"  height="75" width="75" src="{{asset('public/img/door_style/'.$val->image)}}"/></td>
-								<td>
+                                <td>
+    <img class="userimage" height="75" width="75" src="{{ asset('img/door_style/' . $val->image) }}" alt="Door Style Image" />
+</td>								<td>
 									<div class="btn-group" role="group" aria-label="Basic outlined example">
 										<a href="{{url('admin/door-style-edit')}}/{{$val->doorStyle_id}}" class="btn btn-outline-secondary"><i class="icofont-edit text-success"></i></a>
 										<a href="javascript:void(0)" onclick="deleteModal('{{$val->doorStyle_id}}');" class="btn btn-outline-secondary"><i class="icofont-trash text-danger"></i></a>

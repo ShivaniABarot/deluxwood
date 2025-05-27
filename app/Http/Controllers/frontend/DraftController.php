@@ -219,7 +219,7 @@ class DraftController extends Controller
          return view('frontend.draft.add_draft',compact('draft_style','customer_draft_Id','serviceType', 'configuration','pagename','customerDraft'));
    }
    public function updateConfiguration(Request $request){
-    //dd ($request->input('doorStyleId'));
+    // dd ($request->input('doorStyleId'));
     $doorStyleId = $request->input('doorStyleId');
     $configuration = $request->input('configuration');
 
@@ -1152,7 +1152,7 @@ public function count_price($id , $quantity ,$message){
         $customer_draft_id = $draft_product->customer_draft_Id;
         $draft_product->save();
         $this->draft_total($customer_draft_id);
-          
+        //   dd($customer_draft_id, $hinge);
         // return response()->json($hinge);
         return $this->count_side_price($customer_draft_id, $hinge );
     }
