@@ -3000,5 +3000,57 @@ public function count_price($id , $quantity ,$message){
         }
     }
 
+
+        // EDIT AND UPDATE DRAFT FUCNTION ADDED BY SHIVANI ON 27-5-25
+        public function edit($id)
+        {
+            $customerDraft = CustomerDraft::findOrFail($id);
+            $CustomerGroup = CustomerDraft::where('customer_id', $customerDraft->customer_id)->first();
+            $states = StateMaster::all(); 
+            // return view('frontend.draft.customer_edit_draft', compact('customerDraft', 'CustomerGroup','states'));
+            return view('frontend.draft.customer_edit_draft', [
+                'customerDraft' => $customerDraft,
+                'CustomerGroup' => $CustomerGroup,
+                'states' => $states,
+                'pagename' => 'Customer Profile Edit', // or whatever the page name is
+            ]);
+            
+        }
+
+        public function update(Request $request, $id)
+{
+    $request->validate([
+        'po_number' => 'required|string|max:255',
+        'designer' => 'nullable|string|max:255',
+        'ship_name' => 'required|string|max:255',
+        'ship_email' => 'required|email',
+        'ship_contact_no' => 'required|string|max:20',
+        'ship_address' => 'required|string|max:255',
+        'ship_state' => 'required',
+        'ship_city' => 'required|string|max:255',
+        'ship_zip_code' => 'required|string|max:20',
+    ]);
+
+    $cus_draft = CustomerDraft::findOrFail($id);
+    $cus_draft->po_number = $request->po_number;
+    $cus_draft->designer = $request->designer;
+    $cus_draft->discount = $request->discount;
+    $cus_draft->ship_name = $request->ship_name;
+    $cus_draft->ship_email = $request->ship_email;
+    $cus_draft->ship_contact_no = $request->ship_contact_no;
+    $cus_draft->ship_address = $request->ship_address;
+    $cus_draft->ship_state = $request->ship_state;
+    $cus_draft->ship_city = $request->ship_city;
+    $cus_draft->ship_zip_code = $request->ship_zip_code;
+
+    $tax_rate = SalesTax::where('zip_code', $request->ship_zip_code)->value('tax_rate');
+    $cus_draft->zipcode_tax_rate = $tax_rate;
+
+    $cus_draft->save();
+
+    return redirect('/door-style/'.$cus_draft->customer_draft_id)->with('success','Customer Draft Updated Successfully');
+}
+
+        
 }
 

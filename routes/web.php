@@ -99,6 +99,11 @@ Route::POST('/modification/store', [App\Http\Controllers\backend\ModificationCon
 Route::get('/public/img/texExemptForm/{filename}', [App\Http\Controllers\backend\CustomerManagementController::class,'downloadFile'])->name('download.file');
 Route::get('download', [App\Http\Controllers\backend\CustomerManagementController::class, 'download'])->name('download');
 
+// edit customer draft route added by shivani 27-5-25
+Route::get('customer-draft-edit/{id}', [App\Http\Controllers\frontend\DraftController::class, 'edit']);
+Route::post('customer-draft-edit/update/{id}', [App\Http\Controllers\frontend\DraftController::class, 'update']);
+
+
 Route::Post('use-coupon/{id}', [App\Http\Controllers\frontend\DraftController::class, 'use_coupon'])->name('use_coupon');
 Route::get('/remove-coupon/{id}', [App\Http\Controllers\frontend\DraftController::class,'remove_coupon'])->name('remove_coupon');
 

@@ -74,36 +74,37 @@
     style="width: 185px; height: 210px; border-radius: 8px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color); cursor: pointer;">
                         </div>
                         <div class="col-lg-12">
-                           <div class="row">
-                              <div class="col-md-6">
-                                 <p class="text dcc_cls">
-                                    @php
-                                    $doorStyle = \App\Models\DoorStyle::find($doorStyleId);
-                                    echo $doorStyle->name;
-                                    @endphp
-                                 </p>
-                              </div>
-                              @php
+   <div class="row">
+      <div class="col-md-6">
+         <p class="text dcc_cls">
+         @php
                               $draftStyle = \App\Models\DoorStyle::leftJoin('customer_draft_style','customer_draft_style.door_style_Id','door_style.doorStyle_id') 
                               ->where('customer_draft_style.door_style_Id', '=', $doorStyleId)
                               ->where('customer_draft_style.customer_draft_Id', '=', $customer_draft_Id)
                               ->select('customer_draft_style.draft_style_id','customer_draft_style.configuration')
                               ->first();
                               @endphp
-                              <div class="col-md-6">
-                                 <input type="hidden" class="door-style-id" name="doorStyleId_id" value="{{ $doorStyleId }}" >
-                                 @if($iteration === 0)
-                                 <a href="{{url('new-draft')}}/{{ $customer_draft_Id}}" class="btn btn-outline-warning text-uppercase nx_cls">Edit Draft</a>
-                                 @endif
-                                 <br>
-                              </div>
-                              
-                              <div class="col-md-6">
+         </p>
+      </div>
+      <div class="col-md-6">
+         <input type="hidden" class="door-style-id" name="doorStyleId_id" value="{{ $doorStyleId }}" >
+         @if($iteration === 0)
+         <div style="display: flex; gap: 10px;">
+            <a href="{{url('new-draft')}}/{{ $customer_draft_Id}}" class="btn btn-outline-warning text-uppercase nx_cls">Edit Draft</a>
+            <a href="{{ url('customer-draft-edit/' . $customer_draft_Id) }}" class="btn btn-outline-warning text-uppercase nx_cls">Edit Basic Info</a>
+
+
+
+         </div>
+         @endif
+         <br>
+      </div>
+      <div class="col-md-6">
                                  <label class="form-label" >Configuration</label><br>
                                  <a href="#" class="btn btn-secondary w-sm-100">{{$draftStyle->configuration}}</a>
                               </div>
-                           </div>
-                        </div>
+   </div>
+</div>
                      </div>
                   </div>
                   <div class="col-md-4">
