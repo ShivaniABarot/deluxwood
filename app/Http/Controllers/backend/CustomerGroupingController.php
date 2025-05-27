@@ -91,12 +91,12 @@ class CustomerGroupingController extends BaseController {
 
     try {
         Mail::send('email.grouping', $data_array, function ($message) use ($data_array) {
-            $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+            $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
                     ->to($data_array['email'])
                     ->subject('Your Customer Group has been Successfully Updated');
 
                  $EmailLog = new EmailAuditLog();  
-                 $EmailLog->from = 'Orders@deluxewoodexpress';
+                 $EmailLog->from = 'info@deluxewoodcabinetry.com';
                  $EmailLog->to = $data_array['email'];
                  $EmailLog->subject = 'Your Customer Group has been Successfully Updated';
                  $EmailLog->user_id = $data_array['user_id'];

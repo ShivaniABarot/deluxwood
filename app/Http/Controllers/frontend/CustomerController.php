@@ -136,13 +136,13 @@ class CustomerController extends BaseController
         ];
         try {
             Mail::send('email.register', $data_array, function ($message) use ($data_array) {
-                $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+                $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
                     ->to($data_array['email'])
                     ->subject('Registration Confirmation and Status Update');
 
             });
             $EmailLog = new EmailAuditLog();
-            $EmailLog->from = 'Orders@deluxewoodexpress';
+            $EmailLog->from = 'info@deluxewoodcabinetry.com';
             $EmailLog->to = $data_array['email'];
             $EmailLog->subject = 'Registration Confirmation and Status Update';
             $EmailLog->user_id = NULL;
@@ -269,12 +269,12 @@ class CustomerController extends BaseController
         ];
         try {
             Mail::send('email.register', $data_array, function ($message) use ($data_array) {
-                $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+                $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
                     ->to($data_array['email'])
                     ->subject('Registration Confirmation and Status Update');
             });
             $EmailLog = new EmailAuditLog();
-            $EmailLog->from = 'Orders@deluxewoodexpress';
+            $EmailLog->from = 'info@deluxewoodcabinetry.com';
             $EmailLog->to = $data_array['email'];
             $EmailLog->subject = 'Registration Confirmation and Status Update';
             $EmailLog->user_id = null;
@@ -287,12 +287,12 @@ class CustomerController extends BaseController
         // Send registration alert to admin
         try {
             Mail::send('email.registration_alert', $data_array, function ($message) use ($data_array) {
-                $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+                $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
                     ->to('info@deluxewoodcabinetry.com')
                     ->subject('New User Registration Alert');
             });
             $EmailLog = new EmailAuditLog();
-            $EmailLog->from = 'Orders@deluxewoodexpress';
+            $EmailLog->from = 'info@deluxewoodcabinetry.com';
             $EmailLog->to = 'info@deluxewoodcabinetry.com';
             $EmailLog->subject = 'New User Registration Alert';
             $EmailLog->user_id = null;
@@ -430,13 +430,13 @@ class CustomerController extends BaseController
     //     ];
     //     try {
     //         Mail::send('email.register', $data_array, function ($message) use ($data_array) {
-    //             $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+    //             $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
     //                 ->to($data_array['email'])
     //                 ->subject('Registration Confirmation and Status Update');
 
     //         });
     //         $EmailLog = new EmailAuditLog();
-    //         $EmailLog->from = 'Orders@deluxewoodexpress';
+    //         $EmailLog->from = 'info@deluxewoodcabinetry.com';
     //         $EmailLog->to = $data_array['email'];
     //         $EmailLog->subject = 'Registration Confirmation and Status Update';
     //         $EmailLog->user_id = NULL;
@@ -447,13 +447,13 @@ class CustomerController extends BaseController
     //     }
     //     try {
     //         Mail::send('email.registration_alert', $data_array, function ($message) use ($data_array) {
-    //             $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+    //             $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
     //                 ->to('info@deluxewoodcabinetry.com')
     //                 ->subject('New User Registration Alert');
 
     //         });
     //         $EmailLog = new EmailAuditLog();
-    //         $EmailLog->from = 'Orders@deluxewoodexpress';
+    //         $EmailLog->from = 'info@deluxewoodcabinetry.com';
     //         $EmailLog->to = 'info@deluxewoodcabinetry.com';
     //         $EmailLog->subject = 'New User Registration Alert';
     //         $EmailLog->user_id = NULL;
@@ -495,7 +495,7 @@ class CustomerController extends BaseController
 
         try {
             Mail::send('email.contact', $data_array, function ($message) use ($data_array) {
-                $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+                $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
                     ->to('info@deluxewoodcabinetry.com')
                     ->replyTo($data_array['email'], $data_array['name'])
                     ->subject('Contact Us');

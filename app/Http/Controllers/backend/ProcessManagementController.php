@@ -177,12 +177,12 @@ class ProcessManagementController extends BaseController {
 
             try {
                 Mail::send('email.process_status_change', $data_array, function ($message) use ($data_array) {
-                    $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+                    $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
                         ->to($data_array['email'])
                          ->subject('Update on Your Order #' . $data_array['order_number']);
 
                  $EmailLog = new EmailAuditLog();  
-                 $EmailLog->from = 'Orders@deluxewoodexpress';
+                 $EmailLog->from = 'info@deluxewoodcabinetry.com';
                  $EmailLog->to = $data_array['email'];
                  $EmailLog->subject = 'Update on Your Order #' . $data_array['order_number'];
                  $EmailLog->user_id = $data_array['user_id'];
@@ -211,12 +211,12 @@ class ProcessManagementController extends BaseController {
 
             try {
                 Mail::send('email.replace_order', $data_array, function ($message) use ($data_array) {
-                    $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+                    $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
                         ->to($data_array['email'])
                         ->subject('Your Item Replacement Request: Approved');
 
                  $EmailLog = new EmailAuditLog();  
-                 $EmailLog->from = 'Orders@deluxewoodexpress';
+                 $EmailLog->from = 'info@deluxewoodcabinetry.com';
                  $EmailLog->to = $data_array['email'];
                  $EmailLog->subject = 'Your Item Replacement Request: Approved';
                  $EmailLog->user_id = $data_array['user_id'];
@@ -238,12 +238,12 @@ class ProcessManagementController extends BaseController {
 
             try {
                 Mail::send('email.replace_order_reject', $data_array, function ($message) use ($data_array) {
-                    $message->from('Orders@deluxewoodexpress', 'Deluxewood Cabinetry')
+                    $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
                         ->to($data_array['email'])
                         ->subject('Update on Your Item Replacement Request');
 
                      $EmailLog = new EmailAuditLog();  
-                     $EmailLog->from = 'Orders@deluxewoodexpress';
+                     $EmailLog->from = 'info@deluxewoodcabinetry.com';
                      $EmailLog->to = $data_array['email'];
                      $EmailLog->subject = 'Update on Your Item Replacement Request';
                      $EmailLog->user_id = $data_array['user_id'];
