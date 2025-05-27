@@ -35,6 +35,9 @@ Route::get('/', 'App\Http\Controllers\frontend\CustomerController@loadLogin')->n
 Route::post('/login', 'App\Http\Controllers\frontend\CustomerController@userLogin')->name('userLogin');
 Route::post('/dashboard', 'App\Http\Controllers\CustomerController@loadDashboard')->name('loadDashboard');
 
+Route::get('/confirmation', function () {
+    return view('frontend.customer.confirmation');
+})->name('confirmation');
 
 Route::get('send-email', [App\Http\Controllers\EmailController::class, 'sendEmail']);
 

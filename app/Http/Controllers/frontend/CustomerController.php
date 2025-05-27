@@ -168,146 +168,153 @@ class CustomerController extends BaseController
     }
 
     public function store(CustomerForm $request)
-    {
-        // dd($request->all());
-        if ($request->ajax()) {
-            return true;
-        }
-
-        $user = new User();
-        $user->name = $request->company_name;
-        $user->role_id = 2;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
-
-        $randomNumber = 'D' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
-        while (Customer::where('dealer_number', $randomNumber)->exists()) {
-            $randomNumber = 'D' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
-        }
-
-        $customer = new Customer();
-        $customer->user_id = $user->id;
-        $customer->dealer_number = $randomNumber;
-        $customer->company_name = $request->company_name;
-        $customer->address = $request->address;
-        $customer->representative_name = $request->representative_name;
-        $customer->contact_number = $request->contact_number;
-        $customer->email = $request->email;
-        $customer->city = $request->city;
-        $customer->state = $request->state;
-
-        // Handle company logo upload
-        if ($request->hasFile('company_logo')) {
-            $file = $request->file('company_logo');
-            $extension = $file->getClientOriginalExtension();
-            $filename = rand() . '.' . $extension;
-
-            if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
-                return back()->withErrors(['company_logo' => 'Only JPG and PNG files are allowed.']);
-            }
-
-            $file->move('public/img/companyLogo', $filename);
-            $customer->company_logo = $filename;
-        }
-
-        // Owner information
-        $customer->owner_name = $request->owner_name;
-        $customer->owner_phone = $request->owner_phone;
-        $customer->owner_email = $request->owner_email;
-
-        // Reference information
-        $customer->reference_com_name = $request->reference_com_name;
-        $customer->reference_address = $request->reference_address;
-        $customer->reference_contact_number = $request->reference_contact_number;
-        $customer->reference_city = $request->reference_city;
-        $customer->reference_state = $request->reference_state;
-        $customer->reference_zip = $request->reference_zip;
-        $customer->reference_email = $request->reference_email;
-        $customer->account_type = $request->account_type;
-
-        // Tax exempt handling
-        $customer->tex_exempt = $request->tex_exempt;
-        if ($request->tex_exempt == "Yes") {
-            if (!$request->hasFile('tex_exempt_form')) {
-                return back()->withErrors(['tex_exempt_form' => 'Tax Exempt Form is required when Tax Exempt is selected.']);
-            }
-            if (!$request->hasFile('sales_form')) {
-                return back()->withErrors(['sales_form' => 'Sales Certificate is required when Tax Exempt is selected.']);
-            }
-
-            $customer->tex_id = $request->tex_id;
-
-            // Handle tax exempt form upload
-            $file = $request->file('tex_exempt_form');
-            $extension = $file->getClientOriginalExtension();
-            $filename1 = rand() . '.' . $extension;
-            if (!in_array(strtolower($extension), ['pdf', 'jpg', 'jpeg', 'png'])) {
-                return back()->withErrors(['tex_exempt_form' => 'Only PDF, JPG, and PNG files are allowed for Tax Exempt Form.']);
-            }
-            $file->move('public/img/texExemptForm', $filename1);
-            $customer->tex_exempt_form = $filename1;
-
-            // Handle sales certificate upload
-            $file = $request->file('sales_form');
-            $extension = $file->getClientOriginalExtension();
-            $filename2 = rand() . '.' . $extension;
-            if (!in_array(strtolower($extension), ['pdf', 'jpg', 'jpeg', 'png'])) {
-                return back()->withErrors(['sales_form' => 'Only PDF, JPG, and PNG files are allowed for Sales Certificate.']);
-            }
-            $file->move('public/img/salesCertificate', $filename2);
-            $customer->sales_form = $filename2;
-        }
-
-        $customer->created_by = $user->id;
-
-        // Send registration confirmation email
-        $data_array = [
-            'email' => $request->email,
-            'company_name' => $request->company_name,
-            'customer_name' => $request->representative_name,
-        ];
-        try {
-            Mail::send('email.register', $data_array, function ($message) use ($data_array) {
-                $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
-                    ->to($data_array['email'])
-                    ->subject('Registration Confirmation and Status Update');
-            });
-            $EmailLog = new EmailAuditLog();
-            $EmailLog->from = 'info@deluxewoodcabinetry.com';
-            $EmailLog->to = $data_array['email'];
-            $EmailLog->subject = 'Registration Confirmation and Status Update';
-            $EmailLog->user_id = null;
-            $EmailLog->url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-            $EmailLog->save();
-        } catch (\Exception $e) {
-            return back()->withErrors(['email' => 'Failed to send registration confirmation email: ' . $e->getMessage()]);
-        }
-
-        // Send registration alert to admin
-        try {
-            Mail::send('email.registration_alert', $data_array, function ($message) use ($data_array) {
-                $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
-                    ->to('info@deluxewoodcabinetry.com')
-                    ->subject('New User Registration Alert');
-            });
-            $EmailLog = new EmailAuditLog();
-            $EmailLog->from = 'info@deluxewoodcabinetry.com';
-            $EmailLog->to = 'info@deluxewoodcabinetry.com';
-            $EmailLog->subject = 'New User Registration Alert';
-            $EmailLog->user_id = null;
-            $EmailLog->url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-            $EmailLog->save();
-        } catch (\Exception $e) {
-            return back()->withErrors(['email' => 'Failed to send registration alert email: ' . $e->getMessage()]);
-        }
-
-        if ($customer->save()) {
-            return redirect('/')->with('success', 'Your Account has been created successfully. Please wait for admin approval');
-        }
-
-        return back()->withErrors(['error' => 'Failed to create account. Please try again.']);
+{
+    // Handle AJAX requests
+    if ($request->ajax()) {
+        return true;
     }
+
+    // Create new user
+    $user = new User();
+    $user->name = $request->company_name;
+    $user->role_id = 2;
+    $user->email = $request->email;
+    $user->password = Hash::make($request->password);
+    $user->save();
+
+    // Generate unique dealer number
+    $randomNumber = 'D' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
+    while (Customer::where('dealer_number', $randomNumber)->exists()) {
+        $randomNumber = 'D' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
+    }
+
+    // Create new customer
+    $customer = new Customer();
+    $customer->user_id = $user->id;
+    $customer->dealer_number = $randomNumber;
+    $customer->company_name = $request->company_name;
+    $customer->address = $request->address;
+    $customer->representative_name = $request->representative_name;
+    $customer->contact_number = $request->contact_number;
+    $customer->email = $request->email;
+    $customer->city = $request->city;
+    $customer->state = $request->state;
+
+    // Handle company logo upload
+    if ($request->hasFile('company_logo')) {
+        $file = $request->file('company_logo');
+        $extension = $file->getClientOriginalExtension();
+        $filename = rand() . '.' . $extension;
+
+        if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
+            return back()->withErrors(['company_logo' => 'Only JPG and PNG files are allowed.']);
+        }
+
+        $file->move('public/img/companyLogo', $filename);
+        $customer->company_logo = $filename;
+    }
+
+    // Owner information
+    $customer->owner_name = $request->owner_name;
+    $customer->owner_phone = $request->owner_phone;
+    $customer->owner_email = $request->owner_email;
+
+    // Reference information
+    $customer->reference_com_name = $request->reference_com_name;
+    $customer->reference_address = $request->reference_address;
+    $customer->reference_contact_number = $request->reference_contact_number;
+    $customer->reference_city = $request->reference_city;
+    $customer->reference_state = $request->reference_state;
+    $customer->reference_zip = $request->reference_zip;
+    $customer->reference_email = $request->reference_email;
+    $customer->account_type = $request->account_type;
+
+    // Tax exempt handling
+    $customer->tex_exempt = $request->tex_exempt;
+    if ($request->tex_exempt == "Yes") {
+        if (!$request->hasFile('tex_exempt_form')) {
+            return back()->withErrors(['tex_exempt_form' => 'Tax Exempt Form is required when Tax Exempt is selected.']);
+        }
+        if (!$request->hasFile('sales_form')) {
+            return back()->withErrors(['sales_form' => 'Sales Certificate is required when Tax Exempt is selected.']);
+        }
+
+        $customer->tex_id = $request->tex_id;
+
+        // Handle tax exempt form upload
+        $file = $request->file('tex_exempt_form');
+        $extension = $file->getClientOriginalExtension();
+        $filename1 = rand() . '.' . $extension;
+        if (!in_array(strtolower($extension), ['pdf', 'jpg', 'jpeg', 'png'])) {
+            return back()->withErrors(['tex_exempt_form' => 'Only PDF, JPG, and PNG files are allowed for Tax Exempt Form.']);
+        }
+        $file->move('public/img/texExemptForm', $filename1);
+        $customer->tex_exempt_form = $filename1;
+
+        // Handle sales certificate upload
+        $file = $request->file('sales_form');
+        $extension = $file->getClientOriginalExtension();
+        $filename2 = rand() . '.' . $extension;
+        if (!in_array(strtolower($extension), ['pdf', 'jpg', 'jpeg', 'png'])) {
+            return back()->withErrors(['sales_form' => 'Only PDF, JPG, and PNG files are allowed for Sales Certificate.']);
+        }
+        $file->move('public/img/salesCertificate', $filename2);
+        $customer->sales_form = $filename2;
+    }
+
+    $customer->created_by = $user->id;
+
+    // Send registration confirmation email
+    $data_array = [
+        'email' => $request->email,
+        'company_name' => $request->company_name,
+        'customer_name' => $request->representative_name,
+    ];
+    try {
+        Mail::send('email.register', $data_array, function ($message) use ($data_array) {
+            $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
+                ->to($data_array['email'])
+                ->subject('Registration Confirmation and Status Update');
+        });
+        $EmailLog = new EmailAuditLog();
+        $EmailLog->from = 'info@deluxewoodcabinetry.com';
+        $EmailLog->to = $data_array['email'];
+        $EmailLog->subject = 'Registration Confirmation and Status Update';
+        $EmailLog->user_id = null;
+        $EmailLog->url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $EmailLog->save();
+    } catch (\Exception $e) {
+        return back()->withErrors(['email' => 'Failed to send registration confirmation email: ' . $e->getMessage()]);
+    }
+
+    // Send registration alert to admin
+    try {
+        Mail::send('email.registration_alert', $data_array, function ($message) use ($data_array) {
+            $message->from('info@deluxewoodcabinetry.com', 'Deluxewood Cabinetry')
+                ->to('info@deluxewoodcabinetry.com')
+                ->subject('New User Registration Alert');
+        });
+        $EmailLog = new EmailAuditLog();
+        $EmailLog->from = 'info@deluxewoodcabinetry.com';
+        $EmailLog->to = 'info@deluxewoodcabinetry.com';
+        $EmailLog->subject = 'New User Registration Alert';
+        $EmailLog->user_id = null;
+        $EmailLog->url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $EmailLog->save();
+    } catch (\Exception $e) {
+        return back()->withErrors(['email' => 'Failed to send registration alert email: ' . $e->getMessage()]);
+    }
+
+    // Save customer and redirect to confirmation page
+    if ($customer->save()) {
+        return redirect()->route('confirmation');
+
+
+        // return redirect()->route('confirmation');
+    }
+
+    return back()->withErrors(['error' => 'Failed to create account. Please try again.']);
+}
     // public function store(CustomerForm $request)
     // {
     //     if ($request->ajax()) {
