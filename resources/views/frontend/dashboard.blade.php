@@ -5,90 +5,58 @@
 @section('content')
 <div class="container-xxl">
     <div class="row g-3">
-        <div class="mt-4"> 
-            <a href="{{url('customer-draft')}}" class="btn btn-lg btn-block btn-dark text-uppercase" style="float: right;">Add Draft</a>
+        <div class="mt-4">
+            <a href="{{ url('customer-draft') }}" class="btn btn-lg btn-block btn-dark text-uppercase" style="float: right;">Add Draft</a>
         </div>
         <div class="col-lg-12 col-md-12">
             <div class="tab-content mt-1">
                 <div class="tab-pane fade show active" id="summery-today">
                     <div class="row g-1 g-sm-3 mb-3 row-deck" id="draft-container">
-                        @if($customer_draft)
-                        @foreach($customer_draft as $data)
-                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4" id="draft-{{ $data->customer_draft_id }}">
-                            <div class="card">
-                                <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
-                                    <div class="left-info">
-                                        <div><span class="fs-6 fw-bold me-2">Draft : {{ $data->customer_draft_id }}</span></div>
-                                        <table>
-                                            <tr>
-                                                <td style="width: 70%;">
-                                                    <div>
-                                                        <span><b>PO :</b> {{$data->po_number}}</span><br>
-                                                        <span><b>Total :</b> ${{$data->total_price}}</span><br>
-                                                        @php
-                                                        $doorStyle = \App\Models\DoorStyle::find($data->door_style_Id);
-                                                        $doorStyleName = $doorStyle ? $doorStyle->name : 'Unknown Style';
-                                                        $doorStyleImage = $doorStyle ? $doorStyle->image : 'default-image.jpg';
-                                                        @endphp
-                                                        <span><b>Style :</b> {{$doorStyleName}}</span>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 30%;">
-                                                    <div>
-                                                        <div class="items-image">
-                                                            <img src="{{ asset('img/door_style/' . $doorStyleImage) }}" alt="product" style="width: 60px; height:80px; border-radius: 8px; margin-left:10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color); cursor: pointer;">
+                        @if($customer_draft->isNotEmpty())
+                            @foreach($customer_draft as $data)
+                            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4" id="draft-{{ $data->customer_draft_id }}">
+                                <div class="card">
+                                    <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
+                                        <div class="left-info">
+                                            <div><span class="fs-6 fw-bold me-2">Draft : {{ $data->customer_draft_id }}</span></div>
+                                            <table>
+                                                <tr>
+                                                    <td style="width: 70%;">
+                                                        <div>
+                                                            <span><b>PO :</b> {{ $data->po_number }}</span><br>
+                                                            <span><b>Total :</b> ${{ $data->total_price }}</span><br>
+                                                            @php
+                                                                $doorStyle = \App\Models\DoorStyle::find($data->door_style_id);
+                                                                $doorStyleName = $doorStyle ? $doorStyle->name : 'Unknown Style';
+                                                                $doorStyleImage = $doorStyle ? $doorStyle->image : 'default-image.jpg';
+                                                            @endphp
+                                                            <span><b>Style :</b> {{ $doorStyleName }}</span>
                                                         </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </table>
+                                                    </td>
+                                                    <td style="width: 30%;">
+                                                        <div>
+                                                            <div class="items-image">
+                                                                <img src="{{ asset('img/door_style/' . $doorStyleImage) }}" alt="product" style="width: 60px; height:80px; border-radius: 8px; margin-left:10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color); cursor: pointer;">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    @if($data->draft_status == "Save" || $data->draft_status == "Pending")
+                                        <a href="{{ url('add-cart') }}/{{ $data->customer_draft_id }}" class="btn btn-white-border btn-lg btn-block db_cls mb-2">See Details</a>
+                                    @else
+                                        <a href="{{ url('tracking-status/view') }}/{{ $data->customer_draft_id }}" class="btn btn-white-border btn-lg btn-block db_cls mb-2">See Details</a>
+                                    @endif
+                                    <div style="display: flex; gap: 10px;">
+                                        <button type="button" onclick="duplicateModal('{{ $data->customer_draft_id }}');" class="btn btn-white-border btn-lg db_cls" style="flex: 1;">Duplicate</button>
+                                        <button type="button" onclick="deleteModal('{{ $data->customer_draft_id }}');" class="btn btn-white-border btn-lg db_cls button1" style="flex: 1;">Delete</button>
                                     </div>
                                 </div>
-                                @if($data->draft_status == "Save" || $data->draft_status == "Pending")
-                                    <a href="{{url('add-cart')}}/{{$data->customer_draft_id}}" name="" id="" class="btn btn-white-border btn-lg btn-block db_cls mb-2">See Details</a>
-                                @else
-                                    <a href="{{url('tracking-status/view')}}/{{$data->customer_draft_id}}" name="" id="" class="btn btn-white-border btn-lg btn-block db_cls mb-2">See Details</a>
-                                @endif
-                                <div style="display: flex; gap: 10px;">
-                                    <button type="button" name="" id="" onclick="duplicateModal('{{$data->customer_draft_id}}');" class="btn btn-white-border btn-lg db_cls" style="flex: 1;">Duplicate</button>
-                                    <button type="button" name="" id="" onclick="deleteModal('{{$data->customer_draft_id}}');" class="btn btn-white-border btn-lg db_cls button1" style="flex: 1;">Delete</button>
-                                </div>
                             </div>
-                        </div>
-                        @endforeach
+                            @endforeach
                         @else
-                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4">
-                            <div class="card">
-                                <div class="card-body py-xl-4 py-3 d-flex flex-wrap align-items-center justify-content-between">
-                                    <div class="left-info">
-                                        <div><span class="fs-6 fw-bold me-2">Draft : 100</span></div>
-                                        <table>
-                                            <tr>
-                                                <td style="width: 70%;">
-                                                    <div>
-                                                        <span><b>PO :</b> 7625</span><br>
-                                                        <span><b>Total :</b> $34.512</span><br>
-                                                        <span><b>Style :</b> Metro Mist</span>
-                                                    </div>
-                                                </td>
-                                                <td style="width: 30%;">
-                                                    <div>
-                                                        <div class="items-image">
-                                                            <img src="{{ asset('img/door_style/default-image.jpg') }}" alt="product" style="width: 60px; height:80px; border-radius: 8px; margin-left:10px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color); cursor: pointer;">
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                                <button type="button" name="" id="" class="btn btn-white-border btn-lg btn-block db_cls mb-2">See Details</button>
-                                <div style="display: flex; gap: 10px;">
-                                    <button type="button" name="" id="" class="btn btn-white-border btn-lg db_cls" style="flex: 1;">Duplicate</button>
-                                    <button type="button" name="" id="" class="btn btn-white-border btn-lg db_cls button1" style="flex: 1;">Delete</button>
-                                </div>
-                            </div>
-                        </div>
                         @endif
                     </div>
                 </div>
@@ -118,8 +86,8 @@
 @endsection
 
 @push('styles')
-<link rel="stylesheet" href="{!! backendAssets('dist/assets/plugin/datatables/responsive.dataTables.min.css') !!}">
-<link rel="stylesheet" href="{!! backendAssets('dist/assets/plugin/datatables/dataTables.bootstrap5.min.css') !!}">
+<link rel="stylesheet" href="{{ backendAssets('dist/assets/plugin/datatables/responsive.dataTables.min.css') }}">
+<link rel="stylesheet" href="{{ backendAssets('dist/assets/plugin/datatables/dataTables.bootstrap5.min.css') }}">
 @endpush
 
 @push('custom_styles')
@@ -137,9 +105,9 @@
 @endpush
 
 @push('scripts')
-<script src="{!! backendAssets('dist/assets/bundles/apexcharts.bundle.js') !!}"></script>
-<script src="{!! backendAssets('dist/assets/bundles/dataTables.bundle.js') !!}"></script>
-<script src="{!! backendAssets('dist/assets/js/page/index.js') !!}"></script>
+<script src="{{ backendAssets('dist/assets/bundles/apexcharts.bundle.js') }}"></script>
+<script src="{{ backendAssets('dist/assets/bundles/dataTables.bundle.js') }}"></script>
+<script src="{{ backendAssets('dist/assets/js/page/index.js') }}"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB1Jr7axGGkwvHRnNfoOzoVRFV3yOPHJEU&callback=myMap"></script>
 @endpush
 
@@ -171,7 +139,7 @@ function deleteModal(id) {
     $('#confirm-action').on('click', function(event) {
         $('#exampleModalLive').modal('hide');
         $.ajax({
-            url: "{{ url('draft/delete/') }}/" + id,
+            url: "{{ url('draft/delete') }}/" + id,
             type: 'GET',
             dataType: 'json',
             success: function(response) {
@@ -197,46 +165,27 @@ function duplicateModal(id) {
     $('#confirm-action').on('click', function(event) {
         $('#exampleModalLive').modal('hide');
         $.ajax({
-            url: "{{ url('draft/duplicate/') }}/" + id,
-            type: 'GET',
+            url: "{{ url('draft/duplicate') }}/" + id,
+            type: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}"
+            },
             dataType: 'json',
             success: function(response) {
                 if (response.success) {
-                    addNewDraft(id, response.newDraft);
+                    window.location.href = "{{ url('dashboard') }}";
                 } else {
+                    console.error('Duplicate failed:', response);
                     alert('Error duplicating draft: ' + response.message);
                 }
             },
             error: function(xhr) {
                 let errorMsg = xhr.responseJSON?.message || 'An unexpected error occurred.';
-                alert('Error duplicating draft: ' + errorMsg);
+                console.error('AJAX error details:', xhr.responseText, xhr.status, xhr.statusText);
+                alert('Error duplicating draft: ' + errorMsg + ' (Status: ' + xhr.status + ')');
             }
         });
     });
 }
-
-function addNewDraft(originalId, newDraft) {
-    var originalDraft = $('#draft-' + originalId);
-    var newDraftHtml = originalDraft.clone();
-
-    newDraftHtml.attr('id', 'draft-' + newDraft.customer_draft_id);
-    newDraftHtml.find('.fs-6.fw-bold').text('Draft : ' + newDraft.customer_draft_id);
-    newDraftHtml.find('span:contains("PO :")').html('<b>PO :</b> ' + newDraft.po_number);
-    newDraftHtml.find('span:contains("Total :")').html('<b>Total :</b> $' + newDraft.total_price);
-    newDraftHtml.find('span:contains("Style :")').html('<b>Style :</b> ' + newDraft.door_style_name);
-    newDraftHtml.find('img').attr('src', '{{ asset("img/door_style") }}/' + newDraft.door_style_image);
-
-    // Update links
-    var detailsUrl = (newDraft.draft_status == "Save" || newDraft.draft_status == "Pending")
-        ? '{{ url("add-cart") }}/' + newDraft.customer_draft_id
-        : '{{ url("tracking-status/view") }}/' + newDraft.customer_draft_id;
-
-    newDraftHtml.find('a:contains("See Details")').attr('href', detailsUrl);
-    newDraftHtml.find('button:contains("Duplicate")').attr('onclick', 'duplicateModal("' + newDraft.customer_draft_id + '")');
-    newDraftHtml.find('button:contains("Delete")').attr('onclick', 'deleteModal("' + newDraft.customer_draft_id + '")');
-
-    $('#draft-container').prepend(newDraftHtml);
-}
-
 </script>
 @endpush

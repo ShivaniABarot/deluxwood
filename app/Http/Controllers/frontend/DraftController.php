@@ -2959,94 +2959,94 @@ class DraftController extends Controller
 
     // DUPLICATE DRAFT - CODE ADDED BY SHIVANI 28-5-25
 
-    public function duplicate($id)
-    {
-        try {
-            // Find the original draft
-            $originalDraft = CustomerDraft::findOrFail($id);
+    // public function duplicate($id)
+    // {
+    //     try {
+    //         // Find the original draft
+    //         $originalDraft = CustomerDraft::findOrFail($id);
     
-            // Fetch a default DoorStyle (since there's no direct relationship)
-            $doorStyle = DoorStyle::first();
-            if (!$doorStyle) {
-                $doorStyleName = 'N/A';
-                $doorStyleImage = 'default_image.jpg';
-            } else {
-                $doorStyleName = $doorStyle->name;
-                $doorStyleImage = $doorStyle->image ?? 'default_image.jpg';
-            }
+    //         // Fetch a default DoorStyle (since there's no direct relationship)
+    //         $doorStyle = DoorStyle::first();
+    //         if (!$doorStyle) {
+    //             $doorStyleName = 'N/A';
+    //             $doorStyleImage = 'default_image.jpg';
+    //         } else {
+    //             $doorStyleName = $doorStyle->name;
+    //             $doorStyleImage = $doorStyle->image ?? 'default_image.jpg';
+    //         }
     
-            // Duplicate the draft
-            $newDraft = $originalDraft->replicate();
-            $newDraft->created_at = now(); 
-            $newDraft->updated_at = now(); 
-            $newDraft->created_by = auth()->id() ?? null; 
-            $newDraft->updated_by = auth()->id() ?? null; 
-            $newDraft->save();
+    //         // Duplicate the draft
+    //         $newDraft = $originalDraft->replicate();
+    //         $newDraft->created_at = now(); 
+    //         $newDraft->updated_at = now(); 
+    //         $newDraft->created_by = auth()->id() ?? null; 
+    //         $newDraft->updated_by = auth()->id() ?? null; 
+    //         $newDraft->save();
     
-            // Duplicate related draft products (if any)
-            $draftProducts = DB::table('draft_product')->where('customer_draft_id', $id)->get();
-            if ($draftProducts->isNotEmpty()) {
-                foreach ($draftProducts as $product) {
-                    $newProduct = (array) $product;
+    //         // Duplicate related draft products (if any)
+    //         $draftProducts = DB::table('draft_product')->where('customer_draft_id', $id)->get();
+    //         if ($draftProducts->isNotEmpty()) {
+    //             foreach ($draftProducts as $product) {
+    //                 $newProduct = (array) $product;
     
-                    unset($newProduct['id']);
-                    unset($newProduct['draft_product_id']); 
-                    unset($newProduct['customer_draft_Id']); 
-                    unset($newProduct['customer_draft_ID']); 
+    //                 unset($newProduct['id']);
+    //                 unset($newProduct['draft_product_id']); 
+    //                 unset($newProduct['customer_draft_Id']); 
+    //                 unset($newProduct['customer_draft_ID']); 
     
-                    // Set the new customer_draft_id and update timestamps
-                    $newProduct['customer_draft_id'] = $newDraft->customer_draft_id;
-                    $newProduct['created_at'] = now();
-                    $newProduct['updated_at'] = now();
-                    $newProduct['created_by'] = auth()->id() ?? null;
-                    $newProduct['updated_by'] = auth()->id() ?? null;
+    //                 // Set the new customer_draft_id and update timestamps
+    //                 $newProduct['customer_draft_id'] = $newDraft->customer_draft_id;
+    //                 $newProduct['created_at'] = now();
+    //                 $newProduct['updated_at'] = now();
+    //                 $newProduct['created_by'] = auth()->id() ?? null;
+    //                 $newProduct['updated_by'] = auth()->id() ?? null;
     
-                    // Insert the new product
-                    DB::table('draft_product')->insert($newProduct);
-                }
-            }
+    //                 // Insert the new product
+    //                 DB::table('draft_product')->insert($newProduct);
+    //             }
+    //         }
     
-            // Recalculate total price for the new draft
-            $totalPrice = DB::table('draft_product')
-                ->where('customer_draft_id', $newDraft->customer_draft_id)
-                ->sum(DB::raw('COALESCE(final_unit_price, 0)')); // Use COALESCE to handle null values
-            $newDraft->total_price = $totalPrice ?? 0; // Fallback to 0 if null
-            $newDraft->save();
+    //         // Recalculate total price for the new draft
+    //         $totalPrice = DB::table('draft_product')
+    //             ->where('customer_draft_id', $newDraft->customer_draft_id)
+    //             ->sum(DB::raw('COALESCE(final_unit_price, 0)')); // Use COALESCE to handle null values
+    //         $newDraft->total_price = $totalPrice ?? 0; // Fallback to 0 if null
+    //         $newDraft->save();
     
-            // Return the new draft data as JSON
-            return response()->json([
-                'success' => true,
-                'newDraft' => [
-                    'customer_draft_id' => $newDraft->customer_draft_id,
-                    'po_number' => $newDraft->po_number,
-                    'total_price' => $newDraft->total_price,
-                    'door_style_name' => $doorStyleName,
-                    'door_style_image' => $doorStyleImage,
-                    'draft_status' => $newDraft->draft_status,
-                ]
-            ], 200);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
-            // Handle case where the draft is not found
-            Log::error("Draft with ID {$id} not found while duplicating: " . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Draft not found.'
-            ], 404);
-        } catch (\Illuminate\Database\QueryException $e) {
-            // Handle database query errors (e.g., SQL syntax errors)
-            Log::error("Database error while duplicating draft ID {$id}: " . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to duplicate draft due to a database error.'
-            ], 500);
-        } catch (\Exception $e) {
-            // Catch any other unexpected errors
-            Log::error("Unexpected error while duplicating draft ID {$id}: " . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to duplicate draft: ' . $e->getMessage()
-            ], 500);
-        }
-    }
+    //         // Return the new draft data as JSON
+    //         return response()->json([
+    //             'success' => true,
+    //             'newDraft' => [
+    //                 'customer_draft_id' => $newDraft->customer_draft_id,
+    //                 'po_number' => $newDraft->po_number,
+    //                 'total_price' => $newDraft->total_price,
+    //                 'door_style_name' => $doorStyleName,
+    //                 'door_style_image' => $doorStyleImage,
+    //                 'draft_status' => $newDraft->draft_status,
+    //             ]
+    //         ], 200);
+    //     } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+    //         // Handle case where the draft is not found
+    //         Log::error("Draft with ID {$id} not found while duplicating: " . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Draft not found.'
+    //         ], 404);
+    //     } catch (\Illuminate\Database\QueryException $e) {
+    //         // Handle database query errors (e.g., SQL syntax errors)
+    //         Log::error("Database error while duplicating draft ID {$id}: " . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to duplicate draft due to a database error.'
+    //         ], 500);
+    //     } catch (\Exception $e) {
+    //         // Catch any other unexpected errors
+    //         Log::error("Unexpected error while duplicating draft ID {$id}: " . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Failed to duplicate draft: ' . $e->getMessage()
+    //         ], 500);
+    //     }
+    // }
 }
 

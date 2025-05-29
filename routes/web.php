@@ -105,7 +105,7 @@ Route::get('download', [App\Http\Controllers\backend\CustomerManagementControlle
 // edit customer draft route added by shivani 27-5-25
 Route::get('customer-draft-edit/{id}', [App\Http\Controllers\frontend\DraftController::class, 'edit']);
 Route::post('customer-draft-edit/update/{id}', [App\Http\Controllers\frontend\DraftController::class, 'update']);
-Route::get('draft/duplicate/{id}', [App\Http\Controllers\frontend\DraftController::class, 'duplicate'])->name('draft.duplicate');
+Route::post('draft/duplicate/{id}', [App\Http\Controllers\frontend\DashboardController::class, 'duplicate'])->name('draft.duplicate');
 
 Route::Post('use-coupon/{id}', [App\Http\Controllers\frontend\DraftController::class, 'use_coupon'])->name('use_coupon');
 Route::get('/remove-coupon/{id}', [App\Http\Controllers\frontend\DraftController::class,'remove_coupon'])->name('remove_coupon');
