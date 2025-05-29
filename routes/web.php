@@ -448,6 +448,16 @@ Route::POST('/replace-order', [App\Http\Controllers\frontend\RMAController::clas
 				Route::PATCH('/specbook-pdf/update/{id}', '\App\Http\Controllers\backend\SpecbookPdfController@update')->name('update');
 
 
+				// DRAFTS ROUTES ADDED BY SHIVANI 29-5-25
+
+
+					Route::get('drafts-list', [App\Http\Controllers\backend\AdminDraftsController::class, 'index'])->name('admin.drafts-list');
+					Route::get('/admin/draft-view/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'view'])->name('admin.draft.view');
+
+
+
+					
+
 			});
 		
 });
