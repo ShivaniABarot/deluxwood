@@ -27,7 +27,7 @@
                   @csrf
                   <div class="row g-3 align-items-center">
                      @if(($product1===null) &&($product2===null))
-                     <div class="col-md-6">
+                     <!-- <div class="col-md-6">
                         <label class="form-label">Choose First Product <span class="text-danger">*</span></label>
                         <select class="form-control category" id="first_selected_dropdown" name="first">
                            <option value="0">Please Select</option>
@@ -41,8 +41,8 @@
                         <input type="text" name="first_selected" id="first_selected" hidden>
                         <span class="text-danger kt-form__help error first_selected"></span>
                         <input type="text" name="first_selected_name" id="first_selected_name" hidden>
-                     </div>
-                     <div class="col-6">
+                     </div> -->
+                     <!-- <div class="col-6">
                         <label class="form-label">Choose Second Product <span class="text-danger">*</span></label>
                         <select class="form-control category" id="second_selected_dropdown" name="second">
                            <option value="0">Please Select</option>
@@ -58,7 +58,7 @@
                         <input type="text" name="second_selected_name" id="second_selected_name" hidden>
                      </div>
                   </div>
-                  <button type="submit" class="btn btn-warning mt-4 text-uppercase px-5">Compare</button>
+                  <button type="submit" class="btn btn-warning mt-4 text-uppercase px-5">Compare</button> -->
                   <div class="row" id="category_div" style=" margin-top:30px;">
                      @php
                      $count = 0;
@@ -153,7 +153,7 @@
                <div class="col-md-6" style="margin-top:20px">
                   <label class="form-label">Category</label>
                   @php $category1 = DB::table('product_category')
-                  ->leftjoin('product_master','product_master.product_category_id', '=', 'product_category.category_id')
+                  ->leftjoin('product_master','product_master.product_ca   tegory_id', '=', 'product_category.category_id')
                   ->where('product_master.product_id',$comparisonData['product1']->product_id)
                   ->select('title')
                   ->first(); @endphp 

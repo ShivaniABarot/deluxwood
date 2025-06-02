@@ -89,7 +89,7 @@ class SpecbookController extends Controller
             ->where('draft_product.customer_id', $user_id)
             ->groupBy('product_master.product_id')
             ->get();
-         
+            // dd(234567890,$ct_product_data);
         return view('frontend.specbook.get_products', ['ct_product_data' => $ct_product_data]);
 }
 
