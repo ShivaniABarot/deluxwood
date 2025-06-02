@@ -204,65 +204,64 @@
             gap: 1rem; /* Matches Bootstrap's g-3 */
         }
 
-        /* Card styling */
         .card-custom {
-            background: rgb(241, 236, 227); /* Light beige background */
-            border: 1px solid #e0d5a8; /* Subtle border color */
-            border-radius: 10px; /* Rounded corners */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
-            transition: transform 0.2s ease;
-            width: 100%; /* Ensure cards take full column width */
-        }
+    background: linear-gradient(135deg, #ffffff 0%, #f7f9fc 100%); /* Subtle white-to-light-gray gradient for a clean look */
+    border: 1px solid #d1d5db; /* Soft gray border for definition */
+    border-radius: 12px; /* Slightly larger rounded corners for elegance */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05), 0 2px 4px rgba(0, 0, 0, 0.03); /* Layered shadow for depth */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+    width: 100%; /* Ensure cards take full column width */
+}
 
-        .card-custom:hover {
-            transform: translateY(-5px); /* Slight lift on hover */
-        }
+.card-custom:hover {
+    transform: translateY(-3px); /* Subtle lift on hover */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1), 0 4px 8px rgba(0, 0, 0, 0.05); /* Enhanced shadow on hover */
+}
 
-        .card-body {
-            padding: 20px !important;
-        }
+.card-body {
+    padding: 24px !important; /* Slightly more padding for a spacious feel */
+}
 
-        .card-title {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: #333;
-        }
+.card-title {
+    font-size: 1.2rem; /* Slightly larger for prominence */
+    font-weight: 600; /* Medium-bold for clarity */
+    color: #1f2937; /* Dark gray for a professional tone */
+}
 
-        .card-text {
-            font-size: 0.9rem;
-            color: #666;
-            line-height: 1.5;
-        }
+.card-text {
+    font-size: 0.95rem; /* Slightly larger for readability */
+    color: #4b5563; /* Medium gray for a softer contrast */
+    line-height: 1.6; /* Better readability */
+}
 
-        .card-price {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #333;
-        }
-
+.card-price {
+    font-size: 1.6rem; /* Slightly larger for emphasis */
+    font-weight: 700; /* Bold for prominence */
+    color: #111827; /* Near-black for strong contrast */
+}
         /* Button styling for smaller buttons */
         .btn-small {
-            background-color: rgb(191, 190, 190);
-            color: #000000;
-            border: none;
-            border-radius: 15px;
-            padding: 6px 12px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            transition: background-color 0.3s ease;
-            flex: 1;
-            text-align: center;
-        }
+    background-color:rgb(207, 207, 207); /* Light gray background for a clean look */
+    color: #1f2937; /* Dark gray text for professionalism */
+    border: none;
+    border-radius: 15px;
+    padding: 6px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover */
+    flex: 1;
+    text-align: center;
+}
 
-        .btn-small:hover {
-            background-color: rgb(170, 170, 169);
-        }
+.btn-small:hover {
+    background-color: #d1d5db; /* Slightly darker gray on hover */
+    transform: translateY(-2px); /* Subtle lift on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow on hover */
+    color: #111827; /* Near-black text on hover for consistency */
+}
 
-        .button1:hover {
-            color: white !important;
-            background-color: rgb(228, 217, 216) !important;
-        }
+        
 
         /* Uniform button styling */
         .btn-uniform {
