@@ -1,4 +1,5 @@
 @extends(backendView('layouts.app'))
+
 @section('title', 'Dashboard')
 
 @section('content')
@@ -10,7 +11,7 @@
                     <label for="po-search" class="me-2 fw-bold mb-0">Search PO No</label>
                     <div class="input-group" style="width: 250px;">
                         <input type="text" id="po-search" class="form-control" placeholder="Search by PO Number">
-                      
+                        <button class="btn btn-outline-secondary" type="button" id="clear-search">Clear</button>
                     </div>
                 </div>
                 <!-- Sort by PO Number Buttons -->
@@ -54,61 +55,61 @@
             <div class="col-lg-12 col-md-12">
                 <div class="tab-content mt-1">
                     <div class="tab-pane fade show active" id="summery-today">
-                     <!-- Card View -->
-<div class="row g-1 g-sm-3 mb-3 row-deck" id="draft-container-card" style="display: block;">
-    @if($customer_draft->isNotEmpty())
-        @foreach($customer_draft as $data)
-            <div class="col-xl-3 col-lg-4 col-md-4 col-sm-4" id="draft-{{ $data->customer_draft_id }}"
-                data-po-number="{{ $data->po_number }}" data-total-price="{{ $data->total_price }}"
-                data-draft-id="{{ $data->customer_draft_id }}">
-                <div class="card card-custom">
-                    <div class="card-body text-center py-4">
-                        <!-- Door Style Image -->
-                        @php
-                            $doorStyle = \App\Models\DoorStyle::find($data->door_style_id);
-                            $doorStyleName = $doorStyle ? $doorStyle->name : 'Unknown Style';
-                            $doorStyleImage = $doorStyle ? $doorStyle->image : 'default-image.jpg';
-                        @endphp
-                        <div class="items-image mb-3">
-                            <img src="{{ asset('img/door_style/' . $doorStyleImage) }}"
-                                alt="product"
-                                style="width: 100px; height: 100px; border-radius: 8px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color);">
+                        <!-- Card View -->
+                        <div class="row g-3 mb-3" id="draft-container-card">
+                            @if($customer_draft->isNotEmpty())
+                                @foreach($customer_draft as $data)
+                                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6" id="draft-{{ $data->customer_draft_id }}"
+                                        data-po-number="{{ $data->po_number }}" data-total-price="{{ $data->total_price }}"
+                                        data-draft-id="{{ $data->customer_draft_id }}">
+                                        <div class="card card-custom">
+                                            <div class="card-body text-center py-4">
+                                                <!-- Door Style Image -->
+                                                @php
+                                                    $doorStyle = \App\Models\DoorStyle::find($data->door_style_id);
+                                                    $doorStyleName = $doorStyle ? $doorStyle->name : 'Unknown Style';
+                                                    $doorStyleImage = $doorStyle ? $doorStyle->image : 'default-image.jpg';
+                                                @endphp
+                                                <div class="items-image mb-3">
+                                                    <img src="{{ asset('img/door_style/' . $doorStyleImage) }}"
+                                                        alt="product"
+                                                        style="width: 100px; height: 100px; border-radius: 8px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color);">
+                                                </div>
+
+                                                <!-- Draft Info -->
+                                                <h5 class="card-title mb-2">Draft: {{ $data->customer_draft_id }}</h5>
+                                                <p class="card-text mb-1">
+                                                    <strong>PO:</strong> {{ $data->po_number }}<br>
+                                                    <strong>Style:</strong> {{ $doorStyleName }}
+                                                </p>
+                                                <h4 class="card-price mb-3">${{ $data->total_price }}</h4>
+
+                                                <!-- See Details Button -->
+                                                @if($data->draft_status == "Save" || $data->draft_status == "Pending")
+                                                    <a href="{{ url('add-cart') }}/{{ $data->customer_draft_id }}"
+                                                        class="btn btn-add Oldsmobile btn btn-small mb-2">See Details</a>
+                                                @else
+                                                    <a href="{{ url('tracking-status/view') }}/{{ $data->customer_draft_id }}"
+                                                        class="btn btn-small mb-2">See Details</a>
+                                                @endif
+
+                                                <!-- Duplicate and Delete Buttons -->
+                                                <div style="display: flex; gap: 8px; justify-content: center;">
+                                                    <button type="button" onclick="duplicateModal('{{ $data->customer_draft_id }}');"
+                                                        class="btn btn-small mb-2">Duplicate</button>
+                                                    <button type="button" onclick="deleteModal('{{ $data->customer_draft_id }}');"
+                                                        class="btn btn-small mb-2 button1">Delete</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="col-12">
+                                    <p>No drafts found.</p>
+                                </div>
+                            @endif
                         </div>
-
-                        <!-- Draft Info -->
-                        <h5 class="card-title mb-2">Draft: {{ $data->customer_draft_id }}</h5>
-                        <p class="card-text mb-1">
-                            <strong>PO:</strong> {{ $data->po_number }}<br>
-                            <strong>Style:</strong> {{ $doorStyleName }}
-                        </p>
-                        <h4 class="card-price mb-3">${{ $data->total_price }}</h4>
-
-                        <!-- See Details Button -->
-                        @if($data->draft_status == "Save" || $data->draft_status == "Pending")
-                            <a href="{{ url('add-cart') }}/{{ $data->customer_draft_id }}"
-                                class="btn btn-add Oldsmobile btn btn-small mb-2">See Details</a>
-                        @else
-                            <a href="{{ url('tracking-status/view') }}/{{ $data->customer_draft_id }}"
-                                class pls="btn btn-small mb-2">See Details</a>
-                        @endif
-
-                        <!-- Duplicate and Delete Buttons -->
-                        <div style="display: flex; gap: 8px; justify-content: center;">
-                            <button type="button" onclick="duplicateModal('{{ $data->customer_draft_id }}');"
-                                class="btn btn-small mb-2">Duplicate</button>
-                            <button type="button" onclick="deleteModal('{{ $data->customer_draft_id }}');"
-                                class="btn btn-small mb-2 button1">Delete</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endforeach
-    @else
-        <div class="col-12">
-            <p>No drafts found.</p>
-        </div>
-    @endif
-</div>
 
                         <!-- List View -->
                         <div id="draft-container-list" style="display: none;">
@@ -140,7 +141,7 @@
                                                 <td>${{ $data->total_price }}</td>
                                                 <td>
                                                     <img src="{{ asset('img/door_style/' . $doorStyleImage) }}" alt="product"
-                                                        style="width: 60px; height:80px; border-radius: 8px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color);">
+                                                        style="width: 60px; height: 80px; border-radius: 8px; box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08); border: 1px solid var(--border-color);">
                                                 </td>
                                                 <td>
                                                     @php
@@ -153,7 +154,6 @@
                                                     <button type="button" onclick="deleteModal('{{ $data->customer_draft_id }}')"
                                                         class="btn btn-danger text-dark rounded-pill px-3 py-1">Delete</button>
                                                 </td>
-
                                             </tr>
                                         @endforeach
                                     @else
@@ -197,13 +197,21 @@
 
 @push('custom_styles')
     <style>
+        /* Ensure the row behaves as a grid */
+        #draft-container-card {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem; /* Matches Bootstrap's g-3 */
+        }
 
-.card-custom {
-            background:rgb(241, 236, 227); /* Light beige background as in the screenshot */
+        /* Card styling */
+        .card-custom {
+            background: rgb(241, 236, 227); /* Light beige background */
             border: 1px solid #e0d5a8; /* Subtle border color */
             border-radius: 10px; /* Rounded corners */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
             transition: transform 0.2s ease;
+            width: 100%; /* Ensure cards take full column width */
         }
 
         .card-custom:hover {
@@ -217,65 +225,62 @@
         .card-title {
             font-size: 1.1rem;
             font-weight: bold;
-            color: #333; /* Dark text color */
+            color: #333;
         }
 
         .card-text {
             font-size: 0.9rem;
-            color: #666; /* Lighter text color for description */
+            color: #666;
             line-height: 1.5;
         }
 
         .card-price {
             font-size: 1.5rem;
             font-weight: bold;
-            color: #333; /* Price color */
+            color: #333;
         }
 
         /* Button styling for smaller buttons */
         .btn-small {
-            background-color:rgb(191, 190, 190); /* Orange background as in the screenshot */
+            background-color: rgb(191, 190, 190);
             color: #000000;
             border: none;
-            border-radius: 15px; /* Slightly smaller rounded corners */
-            padding: 6px 12px; /* Reduced padding for smaller size */
-            font-size: 0.8rem; /* Smaller font size */
+            border-radius: 15px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
             font-weight: 600;
             text-transform: uppercase;
             transition: background-color 0.3s ease;
-            flex: 1; /* Ensure buttons share space evenly */
+            flex: 1;
             text-align: center;
         }
 
         .btn-small:hover {
-            background-color:rgb(170, 170, 169); /* Slightly darker orange on hover */
+            background-color: rgb(170, 170, 169);
         }
 
-        /* Delete button hover effect */
         .button1:hover {
             color: white !important;
-            background-color:rgb(228, 217, 216) !important; /* Red background on hover for Delete */
+            background-color: rgb(228, 217, 216) !important;
         }
 
-        _
-
-        /* Uniform button styling for non-exempt buttons */
+        /* Uniform button styling */
         .btn-uniform {
-            background: linear-gradient(45deg, #6b7280, #9ca3af); /* Subtle gray gradient */
+            background: linear-gradient(45deg, #6b7280, #9ca3af);
             color: #ffffff;
             border: none;
-            border-radius: 12px; /* Rounded corners */
-            padding: 8px 16px; /* Consistent padding */
-            font-family: 'Inter', sans-serif; /* Modern font */
-            font-size: 14px; /* Consistent font size */
+            border-radius: 12px;
+            padding: 8px 16px;
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
             font-weight: 600;
             line-height: 1.5;
-            height: 36px; /* Fixed height for uniformity */
+            height: 36px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease; /* Smooth hover transition */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             text-transform: uppercase;
         }
 
@@ -286,118 +291,33 @@
         }
 
         .btn-uniform.active {
-            background: linear-gradient(45deg, #ffcd39, #e2b220); /* Active state */
+            background: linear-gradient(45deg, #ffcd39, #e2b220);
             box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
         }
 
         .btn-uniform:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Focus ring */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
         }
 
-        /* Uniform icon styling */
         .uniform-icon {
-            width: 20px; /* Fixed icon size */
+            width: 20px;
             height: 20px;
-            margin-right: 6px; /* Space between icon and text */
-            vertical-align: center;
-        }
-
-        /* Bootstrap Icons (bi) styling */
-        .bi.uniform-icon {
-            font-size: 20px; /* Match SVG icon size */
-            line-height: 1;
-        }
-
-        /* Specific button adjustments */
-        #card-view-btn, #list-view-btn {
-            min-width: 48px; /* Ensure toggle buttons have enough width for icons */
-        }
-
-        /* Search input and clear button */
-        #po-search, #clear-search {
-            height: 36px; /* Match button height */
-        }
-
-        #clear-search {
-            border-left: none;
-        }
-
-        #clear-search:hover {
-            background-color: #f8f9fa;
-            border-color: #dee2e6;
-        }
-
-        /* Label styling */
-        label[for="po-search"] {
-            font-size: 1rem;
-            color: #333;
-        }
-
-        /* Table header styling */
-        .table th {
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        /* Uniform button styling for non-exempt buttons */
-        .btn-uniform {
-            background: linear-gradient(45deg, #6b7280, #9ca3af); /* Subtle gray gradient */
-            color: #ffffff;
-            border: none;
-            border-radius: 12px; /* Rounded corners */
-            padding: 8px 16px; /* Consistent padding */
-            font-family: 'Inter', sans-serif; /* Modern font */
-            font-size: 14px; /* Consistent font size */
-            font-weight: 600;
-            line-height: 1.5;
-            height: 36px; /* Fixed height for uniformity */
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease; /* Smooth hover transition */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            text-transform: uppercase;
-        }
-
-        .btn-uniform:hover {
-            background: linear-gradient(45deg, #4b5563, #7c8794);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
-
-        .btn-uniform.active {
-            background: linear-gradient(45deg, #ffcd39, #e2b220); /* Active state */
-            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
-        }
-
-        .btn-uniform:focus {
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3); /* Focus ring */
-        }
-
-        /* Uniform icon styling */
-        .uniform-icon {
-            width: 20px; /* Fixed icon size */
-            height: 20px;
-            margin-right: 6px; /* Space between icon and text */
+            margin-right: 6px;
             vertical-align: middle;
         }
 
-        /* Bootstrap Icons (bi) styling */
         .bi.uniform-icon {
-            font-size: 20px; /* Match SVG icon size */
+            font-size: 20px;
             line-height: 1;
         }
 
-        /* Specific button adjustments */
         #card-view-btn, #list-view-btn {
-            min-width: 48px; /* Ensure toggle buttons have enough width for icons */
+            min-width: 48px;
         }
 
-        /* Search input and clear button */
         #po-search, #clear-search {
-            height: 36px; /* Match button height */
+            height: 36px;
         }
 
         #clear-search {
@@ -409,13 +329,11 @@
             border-color: #dee2e6;
         }
 
-        /* Label styling */
         label[for="po-search"] {
             font-size: 1rem;
             color: #333;
         }
 
-        /* Table header styling */
         .table th {
             font-weight: bold;
             text-transform: uppercase;
@@ -427,10 +345,6 @@
             border-top: 1px solid gray;
             border-bottom: 1px solid black;
             color: black;
-        }
-
-        .button1:hover {
-            color: red !important;
         }
     </style>
 @endpush
@@ -479,22 +393,21 @@
                 $('#draft-container-card').hide();
                 $(this).addClass('active');
                 $('#card-view-btn').removeClass('active');
-            });
-
-            // Clear search button functionality
-            $('#clear-search').on('click', function() {
-                $('#po-search').val('');
-                location.reload();
+                applyListViewFilterAndSort();
             });
 
             // Search by PO Number
             $('#po-search').on('input', function () {
                 let searchValue = $(this).val().toLowerCase();
-                if (searchValue === '') {
-                    location.reload();
-                    return;
-                }
                 applyCardViewFilterAndSort();
+                applyListViewFilterAndSort();
+            });
+
+            // Clear search button functionality
+            $('#clear-search').on('click', function() {
+                $('#po-search').val('');
+                applyCardViewFilterAndSort();
+                applyListViewFilterAndSort();
             });
 
             // Modal handling
@@ -600,11 +513,23 @@
             $.each(cards, function (index, card) {
                 container.append(card);
             });
+        }
 
-            if (searchValue) {
-                $('#draft-table').DataTable().search(searchValue).draw();
-            } else {
-                $('#draft-table').DataTable().search('').draw();
+        function applyListViewFilterAndSort() {
+            let searchValue = $('#po-search').val().toLowerCase();
+            let table = $('#draft-table').DataTable();
+
+            // Apply search filter
+            table.search(searchValue).draw();
+
+            // Apply sorting based on currentSort
+            if (currentSort === 'asc') {
+                table.order([[1, 'asc']]).draw();
+            } else if (currentSort === 'desc') {
+                table.order([[1, 'desc']]).draw();
+            } else if (currentSort === 'with-co') {
+                // Custom filter for "With CO"
+                table.search('co').draw();
             }
         }
 
@@ -613,6 +538,7 @@
             $(this).addClass('active');
             currentSort = $(this).data('sort');
             applyCardViewFilterAndSort();
+            applyListViewFilterAndSort();
         });
     </script>
 @endpush

@@ -24,7 +24,7 @@
 				<a href="{{url('payment')}}" class="m-link <?php if($pagename == 'Payment' || $pagename == 'Payment Create' || $pagename == 'Payment Edit'){ echo 'active'; } ?>" href=""><i class="icofont-credit-card fs-5" data-bs-toggle="tooltip" data-bs-placement="right" title="Payment"></i> <span>Payment  </span></a>
 			</li>
             <li>
-				<a class="m-link <?php if($pagename == 'Specbook'){ echo 'active'; } ?>" href="{{url('specbook')}}"><i class="icofont-ebook" data-bs-toggle="tooltip" data-bs-placement="right" title="Specbook"></i><span>Specbook  </span></a>
+				<a class="m-link <?php if($pagename == 'Specbook'){ echo 'active'; } ?>" href="{{url('specbook')}}"><i class="icofont-ebook" data-bs-toggle="tooltip" data-bs-placement="right" title="Specbook"></i><span>Specbook & Resources  </span></a>
 			</li>
             <!-- <li>
 				<a class="m-link <?php if($pagename == 'RMA' || $pagename == 'RMA View'){ echo 'active'; } ?>" href="{{url('rma-s')}}"><i class="icofont-arrow-left fs-5" data-bs-toggle="tooltip" data-bs-placement="right" title="RMA's"></i><span>RMA's  </span></a>
