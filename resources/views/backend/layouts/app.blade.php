@@ -345,7 +345,7 @@
                <!-- main menu Search-->
                <a href="{!! backendRoutePut('home') !!}" class="mb-0 brand-icon">
                <span class="logo-icon">
-               <img src="{{ asset('logo.png') }}" alt="Logo" style="height: 50px; width: auto; margin-left: 52px;">
+               <img src="{{ asset('logo.png') }}" alt="Logo" style="height:50px;width: auto;margin-left: -27px;">
                   </span>
                </a>
             </div>
