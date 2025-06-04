@@ -11,7 +11,9 @@
                     <label for="po-search" class="me-2 fw-bold mb-0">Search PO No</label>
                     <div class="input-group" style="width: 250px;">
                         <input type="text" id="po-search" class="form-control" placeholder="Search by PO Number">
-                        <button class="btn btn-outline-secondary" type="button" id="clear-search">Clear</button>
+                        <button class="btn btn-outline-secondary btn-black-text" type="button" id="clear-search">
+    Clear
+</button>
                     </div>
                 </div>
                 <!-- Sort by PO Number Buttons -->
@@ -197,6 +199,13 @@
 
 @push('custom_styles')
     <style>
+
+
+.btn-black-text {
+    color: black !important;
+}
+
+
         /* Ensure the row behaves as a grid */
         #draft-container-card {
             display: flex;
