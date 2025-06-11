@@ -383,10 +383,10 @@
                      @endphp
                   @endforeach
                @endif
-               <tr>
+               <!-- <tr>
                   <td colspan="7" class="thtd_cls text-right" style="font-weight: bold; text-align: right; padding-right: 8px;">Total Price:</td>
                   <td class="thtd_cls text-center" style="font-weight: bold;">${{ number_format($sub_total, 2) }}</td>
-               </tr>
+               </tr> -->
             </table>
          @endforeach
          @php
