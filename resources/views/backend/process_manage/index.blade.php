@@ -106,7 +106,7 @@
                               <a type="button" class="btn btn-outline-secondary" href="{{url('admin\process-manage-view')}}\{{$val->customer_draft_id}}" ><i class="icofont-eye text-warning"></i></a>
 
                               <!-- <button type="button" onclick="deleteModal('{{$val->customer_draft_id}}');" class="btn btn-outline-secondary deleterow"><i class="icofont-ui-delete text-danger"></i></button> -->
-                              <a href="javascript:void(0)" onclick="deleteModal('{{$val->customer_draft_id}}');" class="btn btn-outline-secondary"><i class="icofont-trash text-danger"></i></a>
+                              <!-- <a href="javascript:void(0)" onclick="deleteModal('{{$val->customer_draft_id}}');" class="btn btn-outline-secondary"><i class="icofont-trash text-danger"></i></a> -->
                            </div>
                         </td>
                         @endif
