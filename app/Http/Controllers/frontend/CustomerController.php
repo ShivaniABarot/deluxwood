@@ -637,7 +637,7 @@ class CustomerController extends BaseController
             $this->sendOtp($userData);
             return redirect("/verification/" . $userData->id);
         } else if (Auth::attempt($userCredential)) {
-            dd($userCredential);
+            // dd($userCredential);
             return redirect('/dashboard');
         } else {
             return back()->with('error', 'Username & Password is incorrect');
