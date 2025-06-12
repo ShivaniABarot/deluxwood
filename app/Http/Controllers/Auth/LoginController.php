@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Auth;
 use Validateor;
 use Illuminate\Support\Facades\Session;
+use App\Events\Login as CustomLoginEvent;
 
 class LoginController extends Controller
 {
@@ -48,7 +49,8 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         Session::forget('url.intended'); // Clear the intended URL
-        
+        event(new CustomLoginEvent($user));
+
         // Redirect based on user role
         if (Auth::user()->role_id === 1) {
             return redirect()->route('admin.home');
@@ -75,4 +77,6 @@ class LoginController extends Controller
       Auth::logout();
       return redirect('/');
     }
+
+ 
 }
