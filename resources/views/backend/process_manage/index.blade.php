@@ -111,7 +111,7 @@
                         </td>
                         @endif
                         @if( Auth::user()->role_id == 3)
-                        <td>{{$val->original_price}}</td>
+                        <td>{{ number_format($val->original_price, 2) }}</td>
                         <td>
                            <div class="btn-group" role="group" aria-label="Basic outlined example">
                               <a type="button" class="btn btn-outline-secondary" href="{{url('process-manage-view')}}\{{$val->customer_draft_id}}" ><i class="icofont-eye text-warning"></i></a>
