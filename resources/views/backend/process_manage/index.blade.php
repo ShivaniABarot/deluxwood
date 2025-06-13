@@ -100,7 +100,8 @@
                         @if( Auth::user()->role_id == 1)
                         @php $agent =  DB::table('agent')->select('users.name')->leftjoin('users', 'users.id', 'agent.user_id')->where('id',$val->agent_id)->first();  @endphp 
                         <td style="display:none">@if($agent != null){{$agent->name}} @endif</td>
-                        <td>{{$val->original_price}}</td>
+                        <td>{{ number_format($val->original_price, 2, '.', ',') }}</td>
+
                         <td>
                            <div class="btn-group" role="group" aria-label="Basic outlined example">
                               <a type="button" class="btn btn-outline-secondary" href="{{url('admin\process-manage-view')}}\{{$val->customer_draft_id}}" ><i class="icofont-eye text-warning"></i></a>
