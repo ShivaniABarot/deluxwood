@@ -454,17 +454,16 @@ Route::group(['middleware' => ['auth', 'isAdmin']], function () {
 		Route::get('admin/draft-view/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'view'])->name('admin.draft.view');
 
 		// Define missing routes to prevent 404 errors from redirects
-// Route::get('new-draft/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'newDraft'])->name('admin.draft.new');
-// Route::get('tracking-status/view/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'trackingStatus'])->name('admin.draft.tracking');
+		// Route::get('new-draft/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'newDraft'])->name('admin.draft.new');
+		// Route::get('tracking-status/view/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'trackingStatus'])->name('admin.draft.tracking');
 
 
 		// EMAIL LOGS AND LOGIN LOGS LISTING ROUTE ADDED BY SHIVANI ON 14 JUNE 
 		Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
 		Route::get('logs/export/login/excel', [LogController::class, 'exportLoginLogsExcel'])->name('logs.login.excel');
-Route::get('logs/export/email/excel', [LogController::class, 'exportEmailLogsExcel'])->name('logs.email.excel');
-
-Route::get('logs/export/login/pdf', [LogController::class, 'exportLoginLogsPDF'])->name('logs.login.pdf');
-Route::get('logs/export/email/pdf', [LogController::class, 'exportEmailLogsPDF'])->name('logs.email.pdf');
+		Route::get('logs/export/email/excel', [LogController::class, 'exportEmailLogsExcel'])->name('logs.email.excel');
+		Route::get('logs/export/login/pdf', [LogController::class, 'exportLoginLogsPDF'])->name('logs.login.pdf');
+		Route::get('logs/export/email/pdf', [LogController::class, 'exportEmailLogsPDF'])->name('logs.email.pdf');
 
 
 	});
