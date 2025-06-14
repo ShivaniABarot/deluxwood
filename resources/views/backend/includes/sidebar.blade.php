@@ -251,6 +251,15 @@
                   </a>
                 </li>
 
+                <li>
+    <a class="m-link {{ $pagename == 'Logs Index' ? 'active' : '' }}" href="{{ route('logs.index') }}">
+        <i class="icofont-law-document" data-bs-toggle="tooltip" data-bs-placement="right" title="Logs"></i>
+        <span>Logs</span>
+    </a>
+</li>
+
+
+
        @endif
 
          @if(Auth::user()->role_id == 3)

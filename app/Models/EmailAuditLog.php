@@ -10,4 +10,11 @@ class EmailAuditLog extends Model
      
     protected $table='email_audit_log';
     protected $primaryKey = "id";
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    
+
 }
