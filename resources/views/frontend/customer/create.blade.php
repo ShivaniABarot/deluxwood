@@ -5,7 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Deluxewood Cabinetry Signup</title>
-    <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{asset('public/img/logo.png')}}" type="image/x-icon">
+    <!-- <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon"> -->
     
     <!-- Project CSS files -->
     <link rel="stylesheet" href="https://designmykitchen.cloud/public/backend/ebazar.style.min.css">
