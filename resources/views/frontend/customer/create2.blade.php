@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Deluxewood Cabinetry Signup</title>
     <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon">
-    <link rel="stylesheet" href="https://designmykitchen.cloud/public/backend/ebazar.style.min.css">
-    <link rel="stylesheet" href="https://designmykitchen.cloud/public/backend/custom.css">
+    <link rel="stylesheet" href="https://deluxewoodexpress.com/public/backend/ebazar.style.min.css">
+    <link rel="stylesheet" href="https://deluxewoodexpress.com/public/backend/custom.css">
     <style type="text/css">
         .sgmn_cls {
             display: flex;
@@ -408,7 +408,7 @@
         </div>
     </div>
 
-    <script src="https://designmykitchen.cloud/public/backend/dist/assets/bundles/libscripts.bundle.js"></script>
+    <script src="https://deluxewoodexpress.com/public/backend/dist/assets/bundles/libscripts.bundle.js"></script>
     <script type="text/javascript" src="{{asset('public/validation/CustomerFormValidation.js')}}"></script>
     <script>
         $(document).ready(() => {

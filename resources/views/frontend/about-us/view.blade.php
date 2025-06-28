@@ -5,11 +5,11 @@
       <meta http-equiv="X-UA-Compatible" content="IE=Edge">
       <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
       <title>Deluxewood Cabinetry About Us</title>
-      <link rel="icon" href="https://designmykitchen.cloud/favicon.ico" type="image/x-icon">
+      <link rel="icon" href="https://deluxewoodexpress.com/favicon.ico" type="image/x-icon">
       <!-- Favicon-->
       <!-- project css file  -->
-      <link rel="stylesheet" href="https://designmykitchen.cloud/public/backend/ebazar.style.min.css">
-      <link rel="stylesheet" href="https://designmykitchen.cloud/public/backend/custom.css">
+      <link rel="stylesheet" href="https://deluxewoodexpress.com/public/backend/ebazar.style.min.css">
+      <link rel="stylesheet" href="https://deluxewoodexpress.com/public/backend/custom.css">
       <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"> -->
       <style type="text/css">
          .sgmn_cls {

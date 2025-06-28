@@ -11,8 +11,8 @@
     
 
     <!-- project css file  -->
-    <link rel="stylesheet" href="https://designmykitchen.cloud/public/backend/ebazar.style.min.css">
-    <link rel="stylesheet" href="https://designmykitchen.cloud/public/backend/custom.css">
+    <link rel="stylesheet" href="https://deluxewoodexpress.com/public/backend/ebazar.style.min.css">
+    <link rel="stylesheet" href="https://deluxewoodexpress.com/public/backend/custom.css">
 
     <style type="text/css">
         .sgmn_cls 
@@ -486,7 +486,7 @@
  
 
  
-    <script src="https://designmykitchen.cloud/public/backend/dist/assets/bundles/libscripts.bundle.js"></script>
+    <script src="https://deluxewoodexpress.com/public/backend/dist/assets/bundles/libscripts.bundle.js"></script>
 <script type="text/javascript" src="{{asset('public/validation/CustomerFormValidation.js')}}"></script> 
  
 <script>

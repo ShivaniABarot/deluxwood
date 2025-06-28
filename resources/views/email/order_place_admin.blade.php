@@ -3,7 +3,7 @@
       <table style="max-width:670px;margin:50px auto 10px;background-color:#fbfaf6;padding:50px;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);-moz-box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);box-shadow:0 1px 3px rgba(0,0,0,.12),0 1px 2px rgba(0,0,0,.24);">
          <thead>
             <tr>
-               <th style="text-align:center;"> <img src="https://designmykitchen.cloud/public/logo.png" class="img" alt="logo" style="width: 37%; padding-bottom: 18px;" 
+               <th style="text-align:center;"> <img src="https://deluxewoodexpress.com/public/logo.png" class="img" alt="logo" style="width: 37%; padding-bottom: 18px;" 
                   />
                </th>
             </tr>

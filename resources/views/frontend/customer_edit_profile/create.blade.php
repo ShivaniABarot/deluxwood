@@ -11,7 +11,7 @@
                 <small>Admin Profile</small>
             </div>
             <a class="nav-link dropdown-toggle pulse p-0" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static">
-                <img class="avatar lg rounded-circle img-thumbnail" src="https://designmykitchen.cloud/public/backend/dist/assets/images/profile_av.svg" alt="profile">
+                <img class="avatar lg rounded-circle img-thumbnail" src="https://deluxewoodexpress.com/public/backend/dist/assets/images/profile_av.svg" alt="profile">
             </a>
             
             

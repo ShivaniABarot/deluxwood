@@ -9,8 +9,8 @@
      <link rel="icon" href="{{asset('public/img/logo.png')}}" type="image/x-icon">
     <!-- Favicon-->
     <!-- project css file  -->
-    <link rel="stylesheet" href="https://designmykitchen.cloud/public/backend/ebazar.style.min.css">
-    <link rel="stylesheet" href="https://designmykitchen.cloud/public/backend/custom.css">
+    <link rel="stylesheet" href="https://deluxewoodexpress.com/public/backend/ebazar.style.min.css">
+    <link rel="stylesheet" href="https://deluxewoodexpress.com/public/backend/custom.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <style type="text/css">
         .sgmn_cls {
