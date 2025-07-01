@@ -21,7 +21,6 @@
         }
 
         .sgmn_cls li {
-            /*        margin-right: 20px;*/
         }
         #editor {
         width: 100%;

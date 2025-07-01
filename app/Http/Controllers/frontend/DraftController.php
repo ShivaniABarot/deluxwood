@@ -2329,186 +2329,351 @@ class DraftController extends Controller
 
     public function card_payment($id)
     {
-        try {
-            // Authenticate user
-            $user = Auth::user();
-            if (!$user) {
-                return redirect('/add-cart/' . $id)->with('error', 'User not authenticated.');
-            }
-    
-            // Fetch customer draft and tax group
-            $customer_draft = CustomerDraft::where('customer_draft_id', $id)->first();
-            if (!$customer_draft) {
-                return redirect('/add-cart/' . $id)->with('error', 'Customer draft not found.');
-            }
-    
-            $taxGroup = Customer::select('tax_group', 'tax_rate')
-                ->where('user_id', $user->id)
-                ->first();
-            if (!$taxGroup) {
-                return redirect('/add-cart/' . $id)->with('error', 'Tax group not found.');
-            }
-    
-            // Fetch draft products
-            $items = DraftProduct::leftJoin('product_master', 'product_master.product_id', '=', 'draft_product.product_id')
-                ->leftJoin('product_item', 'product_master.product_id', '=', 'product_item.product_id')
-                ->select(
-                    'product_master.product_name',
-                    'draft_product.final_unit_price',
-                    'draft_product.withoutTax_unit_price',
-                    'product_item.product_item_price',
-                    'draft_product.quantity'
-                )
-                ->where('customer_draft_Id', $id)
-                ->where('is_shipping_cost', 'No')
-                ->get();
-    
-            if ($items->isEmpty()) {
-                return redirect('/add-cart/' . $id)->with('error', 'No items found in the draft.');
-            }
-    
-            // Initialize Stripe
-            $stripeKey = config('services.stripe.key');
-            if (!$stripeKey) {
-                \Log::error('Stripe key is not configured in services.stripe.key or .env');
-                return redirect('/add-cart/' . $id)->with('error', 'Stripe configuration error. Please contact support.');
-            }
-    
-            // Validate that the key is a secret key
-            if (strpos($stripeKey, 'pk_') === 0) {
-                \Log::error('Invalid Stripe key: Publishable key used instead of secret key');
-                return redirect('/add-cart/' . $id)->with('error', 'Invalid Stripe configuration: Publishable key detected. Please contact support.');
-            }
-    
-            \Stripe\Stripe::setApiKey($stripeKey);
-    
-            // Validate address fields (required for customer creation, even if not using automatic tax)
-            $address = [
-                'line1' => $customer_draft->ship_address,
-                'city' => $customer_draft->ship_city,
-                'state' => $customer_draft->ship_state,
-                'postal_code' => $customer_draft->ship_zip_code,
-                'country' => 'US',
-            ];
-    
-            // Log address for debugging
-            \Log::info('Customer address for Stripe: ' . json_encode($address));
-    
-            // Check if address is complete
-            $requiredAddressFields = ['line1', 'city', 'state', 'postal_code', 'country'];
-            foreach ($requiredAddressFields as $field) {
-                if (empty($address[$field])) {
-                    \Log::error("Missing or empty address field: {$field}");
-                    return redirect('/add-cart/' . $id)->with('error', 'Please provide a complete shipping address (address, city, state, postal code, country).');
-                }
-            }
-    
-            // Prepare line items
-            $lineItems = [];
-            $taxRateKey = env('TAX_RATE');
-            $applyTax = $taxGroup->tax_group === 'With Tax' && !empty($taxRateKey);
-    
-            foreach ($items as $item) {
-                // Calculate unit price in cents and ensure it's an integer
-                $unit_price = ($taxGroup->tax_group === 'With Tax' ? $item->withoutTax_unit_price : $item->final_unit_price) * 100;
-                $unit_price = (int) round($unit_price); // Ensure integer for Stripe
-    
-                // Log for debugging
-                \Log::info("Line item price for {$item->product_name}: {$unit_price} cents");
-    
-                $lineItem = [
-                    'price_data' => [
-                        'currency' => 'usd',
-                        'product_data' => [
-                            'name' => $item->product_name,
-                        ],
-                        'unit_amount' => $unit_price,
-                    ],
-                    'quantity' => (int) $item->quantity, // Ensure quantity is an integer
-                ];
-    
-                if ($applyTax) {
-                    $lineItem['tax_rates'] = [$taxRateKey];
-                }
-    
-                $lineItems[] = $lineItem;
-            }
-    
-            // Create or update Stripe customer
-            $customer = \Stripe\Customer::create([
-                'email' => $user->email,
-                'name' => $user->name,
-                'address' => $address,
-            ]);
-    
-            $user->customer_stripe_id = $customer->id;
-            $user->save();
-    
-            // Fetch shipping cost
-            $shipping_cost = DraftProduct::where('customer_draft_Id', $id)
-                ->where('is_shipping_cost', 'Yes')
-                ->first();
-    
-            if (!$shipping_cost) {
-                return redirect('/add-cart/' . $id)->with('error', 'Shipping cost not found.');
-            }
-    
-            // Calculate shipping amount in cents and ensure it's an integer
-            $shipping_amount = (int) round($shipping_cost->final_unit_price * 100);
-            \Log::info("Shipping amount: {$shipping_amount} cents");
-    
-            // Create Stripe Checkout session
-            $sessionParams = [
-                'customer' => $customer->id,
-                'line_items' => $lineItems,
-                'payment_method_types' => ['card'],
-                'mode' => 'payment',
-                'success_url' => route('success', ['id' => $id]) . '?payment_id={CHECKOUT_SESSION_ID}',
-                'cancel_url' => route('add-cart', ['customer_draft_Id' => $id]),
-                'shipping_options' => [
-                    [
-                        'shipping_rate_data' => [
-                            'type' => 'fixed_amount',
-                            'fixed_amount' => [
-                                'amount' => $shipping_amount,
-                                'currency' => 'usd',
+        // $stripeKey = env('STRIPE_KEY');
+        // $stripe = new \Stripe\StripeClient($stripeKey);
+
+        // $taxRate = $stripe->taxRates->create([
+        //     'display_name' => 'Sales Tax',
+        //     'description' => 'Sales tax for in stroe address  pincode : 6516',
+        //     'jurisdiction' => 'US ', // Adjust as needed
+        //     'percentage' => 6.35, // Example tax rate percentage
+        //     'inclusive' => false,
+        // ]);
+       
+        // dd($taxRate->id);
+        $user = Auth::user(); 
+        $taxGroup = Customer::select('tax_group','tax_rate')->where('user_id',$user->id)->first();
+        $customer_draft = CustomerDraft::where('customer_draft_id',$id)->first();
+        $item = DraftProduct::leftJoin('product_master', 'product_master.product_id', '=', 'draft_product.product_id')
+        ->leftJoin('product_item', 'product_master.product_id', '=', 'product_item.product_id')
+        ->select('product_master.product_name','draft_product.final_unit_price','draft_product.withoutTax_unit_price', 'product_item.product_item_price','draft_product.quantity')
+        ->where('customer_draft_Id',$id)
+        ->where('is_shipping_cost',"No")
+        ->get();
+        //  dd($draft_products);
+        // dd($item);
+        $stripeKey = env('STRIPE_KEY');
+        \Stripe\Stripe::setApiKey($stripeKey);
+        $TAX_RATE_key = env('TAX_RATE');
+        // dd($TAX_RATE_key);
+        
+        // $item = DraftProduct::where('customer_draft_Id',$id)->get();
+        $lineItems = [];
+        if($taxGroup->tax_group == "With Tax")
+          {
+            if($customer_draft->service_type == "Self Pickup")
+            {
+                foreach ($item as $item) {
+                    
+                    //   $unit_price = $item->withoutTax_unit_price *100;
+                    $formatted_price = number_format($item->withoutTax_unit_price, 2);
+
+                    $unit_price =$formatted_price *100;
+                    $lineItems[] = [
+                        'price_data' => [
+                            'currency' => 'usd',
+                            'product_data' => [
+                                'name' => $item->product_name, 
                             ],
-                            'display_name' => 'Standard Shipping',
+                            'unit_amount' => $unit_price ,
+                        ],
+                        'quantity' =>  $item->quantity,
+                       'tax_rates' => [$TAX_RATE_key]
+                    ]; 
+                }
+               
+                $statuses = ['Quotation', 'Inprogress', 'Ready', 'In Production', 'Delivered', 'Return'];
+                $customer_exists = CustomerDraft::where('customer_id', $user->id)
+                ->whereIn('draft_status', $statuses)
+                ->exists();
+                
+                $draft= CustomerDraft::find($id);
+                
+                    $customer = \Stripe\Customer::create([
+                        'email' => $user->email,
+                        'name' => $user->name,
+                        'address' => [
+                            'line1' => $draft->ship_address,
+                            'city' =>  $draft->ship_city,
+                            'state' =>  $draft->ship_state,
+                            'postal_code' =>$draft->ship_zip_code, // pincode
+                            'country' => 'US',
+                        ],
+                    ]); 
+        
+                $new_use = User::find($user->id);
+                $new_use->customer_stripe_id = $customer->id;
+                $new_use->save();
+        
+                $shipping_cost = DraftProduct::where('customer_draft_Id',$id)->where('is_shipping_cost','Yes')->first();
+                $unit_price = $shipping_cost->final_unit_price *100;
+           
+                $session = \Stripe\Checkout\Session::create([
+                    'customer' => $customer->id,
+                    'line_items' => $lineItems, 
+                    'payment_method_types' => ['card'],
+                    'mode' => 'payment',
+                    'success_url' => route('success', ['id' => $id]) . '?payment_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => route('add-cart', ['customer_draft_Id' => $id]),
+                    'shipping_options' => [
+                        [
+                            'shipping_rate_data' => [
+                                'type' => 'fixed_amount',
+                                'fixed_amount' => [
+                                    'amount' => $unit_price,
+                                    'currency' => 'usd',
+                                ],
+                                'display_name' => 'Standard Shipping',
+                            ],
                         ],
                     ],
-                ],
-                // Allow Stripe to update the customer’s address from the checkout form (still useful for customer data)
-                'customer_update' => [
-                    'address' => 'auto',
-                    'shipping' => 'auto',
-                ],
-                // Add order ID to the payment intent description
-                'payment_intent_data' => [
-                    'description' => "Order ID: {$id}",
-                ],
-            ];
+                    'payment_intent_data' => [
+                        'description' => "Order ID: {$id}",
+                    ],
+                ]);
+                
+              
+            }elseif($customer_draft->service_type == "Curbside Delivery")
+            {
+                foreach ($item as $item) {
+                    //   $unit_price = $item->final_unit_price *100;
+                    $formatted_price = number_format($item->withoutTax_unit_price, 2);
+
+                    $unit_price =$formatted_price *100;
+                    $lineItems[] = [
+                        'price_data' => [
+                            'currency' => 'usd',
+                            'product_data' => [
+                                'name' => $item->product_name, 
+                            ],
+                            'unit_amount' => $unit_price ,
+                        ],
+                        'quantity' =>  $item->quantity
+                    ];
+                }
+               
+                $statuses = ['Quotation', 'Inprogress', 'Ready', 'In Production', 'Delivered', 'Return'];
+                $customer_exists = CustomerDraft::where('customer_id', $user->id)
+                ->whereIn('draft_status', $statuses)
+                ->exists();
+                
+                $draft= CustomerDraft::find($id);
+                
+                    $customer = \Stripe\Customer::create([
+                        'email' => $user->email,
+                        'name' => $user->name,
+                        'address' => [
+                            'line1' => $draft->ship_address,
+                            'city' =>  $draft->ship_city,
+                            'state' =>  $draft->ship_state,
+                            'postal_code' =>$draft->ship_zip_code, // pincode
+                            'country' => 'US',
+                        ],
+                    ]); 
+        
+                $new_use = User::find($user->id);
+                $new_use->customer_stripe_id = $customer->id;
+                $new_use->save();
+        
+                $shipping_cost = DraftProduct::where('customer_draft_Id',$id)->where('is_shipping_cost','Yes')->first();
+                $unit_price = $shipping_cost->final_unit_price *100;
+                try {
+                $session = \Stripe\Checkout\Session::create([
+                    'customer' => $customer->id,
+                    'line_items' => $lineItems, 
+                    'payment_method_types' => ['card'],
+                    'mode' => 'payment',
+                    'success_url' => route('success', ['id' => $id]) . '?payment_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => route('add-cart', ['customer_draft_Id' => $id]),
+                    'shipping_options' => [
+                        [
+                            'shipping_rate_data' => [
+                                'type' => 'fixed_amount',
+                                'fixed_amount' => [
+                                    'amount' => $unit_price, // Shipping cost in cents
+                                    'currency' => 'usd',
+                                ],
+                                'display_name' => 'Standard Shipping', // Required display name
+                            ],
+                        ],
+                    ],
+                    'automatic_tax' => [
+                        'enabled' => true,
+                    ],
+                    
+                
+                ]);
+            } catch (\Stripe\Exception\InvalidRequestException $e) {
+                if ($e->getError()->code === 'parameter_invalid_address') {
+                  return redirect('/add-cart/'.$id)->with('error', 'Error:Please enter a valid shipping address for accurate tax calculation.'.$e->getError()->code);
+                } else {
+                    return redirect('/add-cart/'.$id)->with('error', 'Error:Please enter a valid shipping address for accurate tax calculation.'.$e->getError()->code);
+                }
+              }
+               
+               
+                }else{
+                    foreach ($item as $item) {
+                        //   $unit_price = $item->final_unit_price *100;
+                        $formatted_price = number_format($item->withoutTax_unit_price, 2);
     
-            $session = \Stripe\Checkout\Session::create($sessionParams);
+                        $unit_price =$formatted_price *100;
+                        $lineItems[] = [
+                            'price_data' => [
+                                'currency' => 'usd',
+                                'product_data' => [
+                                    'name' => $item->product_name, 
+                                ],
+                                'unit_amount' => $unit_price ,
+                            ],
+                            'quantity' =>  $item->quantity
+                        ];
+                    }
+                   
+                    $statuses = ['Quotation', 'Inprogress', 'Ready', 'In Production', 'Delivered', 'Return'];
+                    $customer_exists = CustomerDraft::where('customer_id', $user->id)
+                    ->whereIn('draft_status', $statuses)
+                    ->exists();
+                    
+                    $draft= CustomerDraft::find($id);
+                    
+                        $customer = \Stripe\Customer::create([
+                            'email' => $user->email,
+                            'name' => $user->name,
+                            'address' => [
+                                'line1' => $draft->ship_address,
+                                'city' =>  $draft->ship_city,
+                                'state' =>  $draft->ship_state,
+                                'postal_code' =>$draft->ship_zip_code, // pincode
+                                'country' => 'US',
+                            ],
+                        ]); 
+            
+                    $new_use = User::find($user->id);
+                    $new_use->customer_stripe_id = $customer->id;
+                    $new_use->save();
+            
+                    $shipping_cost = DraftProduct::where('customer_draft_Id',$id)->where('is_shipping_cost','Yes')->first();
+                    $unit_price = $shipping_cost->final_unit_price *100;
+                    try {
+                    $session = \Stripe\Checkout\Session::create([
+                        'customer' => $customer->id,
+                        'line_items' => $lineItems, 
+                        'payment_method_types' => ['card'],
+                        'mode' => 'payment',
+                        'success_url' => route('success', ['id' => $id]) . '?payment_id={CHECKOUT_SESSION_ID}',
+                        'cancel_url' => route('add-cart', ['customer_draft_Id' => $id]),
+                        'shipping_options' => [
+                            [
+                                'shipping_rate_data' => [
+                                    'type' => 'fixed_amount',
+                                    'fixed_amount' => [
+                                        'amount' => $unit_price, // Shipping cost in cents
+                                        'currency' => 'usd',
+                                    ],
+                                    'display_name' => 'Standard Shipping', // Required display name
+                                ],
+                            ],
+                        ],
+                        'automatic_tax' => [
+                            'enabled' => true,
+                        ],
+                        
+                    
+                    ]);
+                } catch (\Stripe\Exception\InvalidRequestException $e) {
+                    if ($e->getError()->code === 'parameter_invalid_address') {
+                      return redirect('/add-cart/'.$id)->with('error', 'Error:Please enter a valid shipping address for accurate tax calculation.');
+                    } else {
+                        return redirect('/add-cart/'.$id)->with('error', 'Error:Please enter a valid shipping address for accurate tax calculation.');
+                    }
+                  }
+                 }
+            
+          
+            }else{
+      
+                foreach ($item as $item) {
+                    // $unit_price = $item->withoutTax_unit_price *100;4
+                    $formatted_price = number_format($item->final_unit_price, 2);
+
+                    $unit_price =$formatted_price *100;
+                    $lineItems[] = [
+                        'price_data' => [
+                            'currency' => 'usd',
+                            'product_data' => [
+                                'name' => $item->product_name, 
+                            ],
+                            'unit_amount' => $unit_price ,
+                        ],
+                        'quantity' =>  $item->quantity,
+                        
+                    ];
+                }
+            
+                $statuses = ['Quotation', 'Inprogress', 'Ready', 'In Production', 'Delivered', 'Return'];
+                $customer_exists = CustomerDraft::where('customer_id', $user->id)
+                ->whereIn('draft_status', $statuses)
+                ->exists();
+                
+                $draft= CustomerDraft::find($id);
+                
+                    $customer = \Stripe\Customer::create([
+                        'email' => $user->email,
+                        'name' => $user->name,
+                        'address' => [
+                            'line1' => $draft->ship_address,
+                            'city' =>  $draft->ship_city,
+                            'state' =>  $draft->ship_state,
+                            'postal_code' =>$draft->ship_zip_code, // pincode
+                            'country' => 'US',
+                        ],
+                    ]); 
+
+                $new_use = User::find($user->id);
+                $new_use->customer_stripe_id = $customer->id;
+                $new_use->save();
+
+                $shipping_cost = DraftProduct::where('customer_draft_Id',$id)->where('is_shipping_cost','Yes')->first();
+                $unit_price = $shipping_cost->final_unit_price *100;
+        
+                $session = \Stripe\Checkout\Session::create([
+                    'customer' => $customer->id,
+                    'line_items' => $lineItems, 
+                    'payment_method_types' => ['card'],
+                    'mode' => 'payment',
+                    'success_url' => route('success', ['id' => $id]) . '?payment_id={CHECKOUT_SESSION_ID}',
+                    'cancel_url' => route('add-cart', ['customer_draft_Id' => $id]),
+                    'shipping_options' => [
+                        [
+                            'shipping_rate_data' => [
+                                'type' => 'fixed_amount',
+                                'fixed_amount' => [
+                                    'amount' => $unit_price, // Shipping cost in cents
+                                    'currency' => 'usd',
+                                ],
+                                'display_name' => 'Standard Shipping', // Required display name
+                            ],
+                        ],
+                    ],
+                   
+                ]);
+            }
     
-            // Update draft status
-            $customer_draft->draft_status = 'Save';
-            $customer_draft->save();
-    
-            // Redirect to Stripe Checkout
-            return redirect()->away($session->url);
-    
-        } catch (\Stripe\Exception\InvalidRequestException $e) {
-            $errorMessage = $e->getError()->code === 'parameter_invalid_address'
-                ? 'Please enter a valid shipping address.'
-                : 'An error occurred during payment processing: ' . $e->getMessage();
-            \Log::error('Stripe Error: ' . $e->getMessage());
-            return redirect('/add-cart/' . $id)->with('error', $errorMessage);
-        } catch (\Exception $e) {
-            \Log::error('Unexpected Error: ' . $e->getMessage());
-            return redirect('/add-cart/' . $id)->with('error', 'An unexpected error occurred: ' . $e->getMessage());
-        }
+    // dd($session);
+   
+     $customer_draft=CustomerDraft::where('customer_draft_id',$id)->first();
+       
+     $customer_draft->draft_status ="Save";
+     $customer_draft->save();
+  
+
+    //  return view('frontend.draft.checkout', ['session' => $session]);
+        return redirect()->away($session->url);
     }
-    
+
+
+
     public function bank_payment()
     {
         $pagename = "Bank Payment";
