@@ -28,7 +28,7 @@
                         <i class="bi bi-sort-down-alt uniform-icon"></i>
                     </button>
                     <!-- With CO (DUPLICATED DRAFTS) Button -->
-                    <button class="btn btn-uniform sort-btn" data-sort="with-co">
+                    <button class="btn btn-uniform sort-btn" data-sort  ="with-co">
                         With CO
                     </button>
                 </div>

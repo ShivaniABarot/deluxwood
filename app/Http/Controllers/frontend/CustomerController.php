@@ -169,6 +169,8 @@ class CustomerController extends BaseController
 
     public function store(CustomerForm $request)
 {
+    // dd($request->all());
+    // dd(85455555564);
     // Handle AJAX requests
     if ($request->ajax()) {
         return true;

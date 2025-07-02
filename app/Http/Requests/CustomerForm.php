@@ -48,6 +48,7 @@ class CustomerForm extends FormRequest
             $rules['tex_exempt'] = 'required';
             if($_REQUEST['tex_exempt'] == 'Yes'){
                 $rules['tex_id'] = 'required';
+                $rules['sales_form'] = 'required';
             }
             // $rules['sales_form'] = 'required';
            
@@ -128,6 +129,7 @@ class CustomerForm extends FormRequest
             $rules['confirm_password'] = 'required|same:password';
             if($_REQUEST['tex_exempt'] == 'Yes'){
                 $rules['tex_id'] = 'required';
+                $rules['tex_id'] = 'sales_form';
             }
             if($_REQUEST['reference_contact_number'] != ''){
                 $rules['reference_contact_number'] = 'digits:10|regex:/^([0-9]*)$/';
