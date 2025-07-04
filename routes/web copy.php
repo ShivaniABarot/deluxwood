@@ -108,6 +108,7 @@ Route::group(['middleware' => ['auth', 'isCustomer']], function () {
 	Route::get('customer-draft-edit/{id}', [App\Http\Controllers\frontend\DraftController::class, 'edit']);
 	Route::post('customer-draft-edit/update/{id}', [App\Http\Controllers\frontend\DraftController::class, 'update']);
 	Route::post('draft/duplicate/{id}', [App\Http\Controllers\frontend\DashboardController::class, 'duplicate'])->name('draft.duplicate');
+	// Route::get('/add-cart/{customer_draft_Id}', [App\Http\Controllers\frontend\DashboardController::class, 'addCart'])->name('add-cart');
 	// Route::get('/new-draft/{customer_draft_Id}', [App\Http\Controllers\frontend\DashboardController::class, 'showProduct'])->name('new-draft');
 	Route::get('/draft-product/delete/{id}', '\App\Http\Controllers\frontend\DashboardController@draft_product_destroy')->name('draft-product-delete');
 	Route::POST('/draft-product/store/{customer_draft_id}', [App\Http\Controllers\frontend\DashboardController::class, 'draft_product_store'])->name('draft-product-store');
@@ -199,8 +200,7 @@ Route::get('/get-draft-products', [App\Http\Controllers\frontend\DashboardContro
 	Route::get('/mail', [App\Http\Controllers\frontend\TrackingStatusController::class, 'mail'])->name('mail');
 	Route::get('/invoice', [App\Http\Controllers\frontend\TrackingStatusController::class, 'invoice'])->name('invoice');
 	Route::get('/draft-product/delete/{id}', '\App\Http\Controllers\frontend\DraftController@draft_product_destroy')->name('draft-product-delete');
-	Route::delete('/draft/delete/{id}', [App\Http\Controllers\frontend\DraftController::class, 'draft_destroy'])->name('draft.delete');
-
+	Route::get('/draft/delete/{id}', '\App\Http\Controllers\frontend\DraftController@draft_destroy')->name('draft-delete');
 	Route::get('checkout-form', [App\Http\Controllers\frontend\TrackingStatusController::class, 'checkout_form'])->name('checkout_form');
 	Route::post('store-checkout-form', [App\Http\Controllers\frontend\TrackingStatusController::class, 'store_checkout_form'])->name('store_checkout_form');
 	Route::get('refresh-draft/{status}/{id}/{price}/{original_price}', '\App\Http\Controllers\frontend\DraftController@refresh_draft')->name('refresh_draft');

@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Deluxewood Cabinetry Signup</title>
     <link rel="icon" href="{{asset('public/img/logo.png')}}" type="image/x-icon">
-    <!-- <link rel="icon" href="{{ asset('img/logo.png') }}" type="image/x-icon"> -->
     
     <!-- Project CSS files -->
     <link rel="stylesheet" href="https://deluxewoodexpress.com/public/backend/ebazar.style.min.css">
@@ -20,9 +19,89 @@
         .sgmn_cls li {
             /* margin-right: 20px; */
         }
+        
+        /* Loading overlay styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        
+        .loading-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+        }
+        
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .loading-subtext {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Button loading state */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+        }
+        
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            top: 50%;
+            left: 50%;
+            margin-left: -10px;
+            margin-top: -10px;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s linear infinite;
+        }
     </style>
 </head>
 <body style="background-color: #FBFAF6;">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">Creating Your Account</div>
+            <div class="loading-subtext">Please wait while we process your information...</div>
+        </div>
+    </div>
+
     <div id="ebazar-layout" class="theme-blue">
         <!-- Main body area -->
         <div class="main p-2 py-3 p-xl-5">
@@ -84,30 +163,19 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="mb-2">
+                                            <label class="form-label">Company Logo</label>
+                                            <label class="custom-file">
+                                                <input type="file" class="form-control" id="company_logo" name="company_logo" onclick="compantLogoClicked()">
+                                                <span class="text-danger" id="company_logo_error"></span>
+                                            </label>
+                                        </div>
+                                        <img id="imgPreview" class="userimage" />
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-2">
                                             <label class="form-label">Address</label>
                                             <input type="text" name="address" class="form-control form-control-sm" placeholder="Enter address">
                                             <span class="text-danger kt-form__help error address"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="mb-2">
-                                            <label class="form-label">Representative Name</label>
-                                            <input type="text" name="representative_name" class="form-control form-control-sm" placeholder="Enter representative name">
-                                            <span class="text-danger kt-form__help error representative_name"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="mb-2">
-                                            <label class="form-label">Contact Number</label>
-                                            <input type="tel" maxlength="10" name="contact_number" class="form-control form-control-sm" placeholder="Enter contact number">
-                                            <span class="text-danger kt-form__help error contact_number"></span>
-                                        </div>
-                                    </div>
-                                    <div class="col-6">
-                                        <div class="mb-2">
-                                            <label class="form-label">Email</label>
-                                            <input type="text" name="email" class="form-control form-control-sm" placeholder="name@example.com">
-                                            <span class="text-danger kt-form__help error email"></span>
                                         </div>
                                     </div>
                                     <div class="col-6">
@@ -131,14 +199,28 @@
                                     </div>
                                     <div class="col-6">
                                         <div class="mb-2">
-                                            <label class="form-label">Company Logo</label>
-                                            <label class="custom-file">
-                                                <input type="file" class="form-control" id="company_logo" name="company_logo" onclick="compantLogoClicked()">
-                                                <span class="text-danger" id="company_logo_error"></span>
-                                            </label>
+                                            <label class="form-label">Representative Name</label>
+                                            <input type="text" name="representative_name" class="form-control form-control-sm" placeholder="Enter representative name">
+                                            <span class="text-danger kt-form__help error representative_name"></span>
                                         </div>
-                                        <img id="imgPreview" class="userimage" />
                                     </div>
+                                    <div class="col-6">
+                                        <div class="mb-2">
+                                            <label class="form-label">Contact Number</label>
+                                            <input type="tel" maxlength="10" name="contact_number" class="form-control form-control-sm" placeholder="Enter contact number">
+                                            <span class="text-danger kt-form__help error contact_number"></span>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="mb-2">
+                                            <label class="form-label">Email</label>
+                                            <input type="text" name="email" class="form-control form-control-sm" placeholder="name@example.com">
+                                            <span class="text-danger kt-form__help error email"></span>
+                                        </div>
+                                    </div>
+                                   
+                                    
+                                    
                                     <h5 style="margin:20px 0 14px 0;"><u>Owner Information</u> <span class="text-danger">*</span></h5>
                                     <div class="col-6">
                                         <div class="mb-2">
@@ -287,7 +369,9 @@
                                         </div>
                                     </div>
                                     <div class="col-12 text-center mt-4">
-                                        <button type="submit" class="btn btn-lg btn-block btn-light lift text-uppercase" id="submitButton">SIGN UP</button>
+                                        <button type="submit" class="btn btn-lg btn-block btn-light lift text-uppercase" id="submitButton">
+                                            <span id="buttonText">SIGN UP</span>
+                                        </button>
                                     </div>
                                     <div class="col-12 text-center mt-4">
                                         <span>Already have an account? <a href="{{url('/')}}" title="Sign in" class="text-secondary">Sign in here</a></span>
@@ -329,10 +413,22 @@
                 $(this).siblings('.text-danger').empty();
             });
 
+            // Function to show loading
+            function showLoading() {
+                $('#loadingOverlay').css('display', 'flex');
+                $('#submitButton').addClass('btn-loading').prop('disabled', true);
+                $('#buttonText').text('Processing...');
+            }
+
+            // Function to hide loading
+            function hideLoading() {
+                $('#loadingOverlay').css('display', 'none');
+                $('#submitButton').removeClass('btn-loading').prop('disabled', false);
+                $('#buttonText').text('SIGN UP');
+            }
+
             // Form submission handling
             $('#CustomerForm').on('submit', function(event) {
-                var $submitButton = $('#submitButton');
-                $submitButton.prop('disabled', true).text('Submitting...');
                 var isValid = true;
 
                 // Validate confirmation checkbox
@@ -388,8 +484,21 @@
 
                 if (!isValid) {
                     event.preventDefault();
-                    $submitButton.prop('disabled', false).text('SIGN UP');
+                    return false;
                 }
+
+                // Show loading if validation passes
+                showLoading();
+                
+                // If there's an error during submission, you can hide the loading
+                // This would typically be handled in your server response or AJAX error callback
+                // For now, we'll let the form submit normally
+            });
+
+            // Handle form submission errors (if using AJAX)
+            // You can add this if you want to handle errors and hide loading
+            $(document).ajaxError(function() {
+                hideLoading();
             });
 
             // Clear specific error messages on file input change

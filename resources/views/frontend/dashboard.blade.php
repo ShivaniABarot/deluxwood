@@ -10,6 +10,7 @@
                 <div class="d-flex align-items-center">
                     <label for="po-search" class="me-2 fw-bold mb-0">Search PO No</label>
                     <div class="input-group" style="width: 250px;">
+                        
                         <input type="text" id="po-search" class="form-control" placeholder="Search by PO Number">
                         <button class="btn btn-outline-secondary btn-black-text" type="button" id="clear-search">
     Clear
@@ -28,7 +29,7 @@
                         <i class="bi bi-sort-down-alt uniform-icon"></i>
                     </button>
                     <!-- With CO (DUPLICATED DRAFTS) Button -->
-                    <button class="btn btn-uniform sort-btn" data-sort  ="with-co">
+                    <button class="btn btn-uniform sort-btn" data-sort="with-co">
                         With CO
                     </button>
                 </div>
@@ -84,6 +85,7 @@
                                                     <strong>PO:</strong> {{ $data->po_number }}<br>
                                                     <strong>Style:</strong> {{ $doorStyleName }}
                                                 </p>
+                                               
                                                 <h4 class="card-price mb-3">${{ $data->total_price }}</h4>
 
                                                 <!-- See Details Button -->
@@ -436,34 +438,43 @@
             });
         });
 
-        function deleteModal(id) {
-            $('#exampleModalLiveLabel').text('Delete Draft');
-            $('#modal-body-text').text('Are you sure you want to delete this draft?');
-            $('#exampleModalLive').modal('show');
+     // Alternative approach using FormData
+     function deleteModal(id) {
+    $('#exampleModalLiveLabel').text('Delete Draft');
+    $('#modal-body-text').text('Are you sure you want to delete this draft?');
+    $('#exampleModalLive').modal('show');
 
-            $('#confirm-action').on('click', function (event) {
-                $('#exampleModalLive').modal('hide');
-                $.ajax({
-                    url: "{{ url('draft/delete') }}/" + id,
-                    type: 'GET',
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.success) {
-                            $('#draft-' + id).remove();
-                            $('#draft-list-' + id).remove();
-                        } else {
-                            alert('Error deleting draft: ' + response.message);
-                        }
-                    },
-                    error: function (xhr) {
-                        let errorMsg = xhr.responseJSON?.message || 'An unexpected error occurred.';
-                        alert('Error deleting draft: ' + errorMsg);
-                    }
-                });
-            });
-        }
+    $('#confirm-action').off('click.deleteModal');
 
-        function duplicateModal(id) {
+    $('#confirm-action').on('click.deleteModal', function (event) {
+        event.preventDefault();
+        $('#exampleModalLive').modal('hide');
+
+        $.ajax({
+            url: `/draft/delete/${id}`,
+            type: 'POST', // Required to spoof DELETE
+            data: {
+                _method: 'DELETE', // Laravel uses this to spoof the HTTP verb
+                _token: "{{ csrf_token() }}" // Required for CSRF protection
+            },
+            success: function (response) {
+                if (response.status === 'success') {
+                    $('#draft-' + id).remove();
+                    $('#draft-list-' + id).remove();
+                } else {
+                    alert('Error deleting draft: ' + (response.message || 'Unknown error'));
+                }
+            },
+            error: function (xhr) {
+                let errorMsg = xhr.responseJSON?.message || 'An unexpected error occurred.';
+                alert('Error deleting draft: ' + errorMsg);
+            }
+        });
+    });
+}
+
+
+function duplicateModal(id) {
             $('#exampleModalLiveLabel').text('Duplicate Draft');
             $('#modal-body-text').text('Are you sure you want to duplicate this draft?');
             $('#exampleModalLive').modal('show');

@@ -66,7 +66,8 @@
     </p>
 </div>
                                      <div class="col-12 text-center mt-4">
-                                         <a href="{{url('/')}}" class="btn btn-lg btn-block btn-light lift text-uppercase">Return to Home</a>
+                                         <a
+                                         href="{{url('/')}}" class="btn btn-lg btn-block btn-light lift text-uppercase">Return to Home</a>
                                      </div>
                                  </div>
                              </div>
