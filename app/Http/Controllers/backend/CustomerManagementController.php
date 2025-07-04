@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\backend;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Http\Request;
 use App\Http\Requests\CustomerForm;
 use App\Models\Customer;
 use App\Models\User;
@@ -13,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
 use Hash;
 use Session;
 
@@ -72,58 +72,52 @@ class CustomerManagementController extends BaseController {
         return view('backend.customer_management.create',compact('pagename','state'));
     }
 
-    public function store(CustomerForm  $request){
-      
-        if($request->ajax()){
+    // below code add sales form field by shivani 04-07-25
+    public function store(CustomerForm $request)
+    {
+        // dd(65454665465 , $request->all());
+        if ($request->ajax()) {
             return true;
         }
-
+    
         $user = new User();  
-
         $user->name = $request->company_name;
         $user->role_id = 2;
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
-
         $user->save();
+    
         $randomNumber = 'D' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
         while (Customer::where('dealer_number', $randomNumber)->exists()) {
             $randomNumber = 'D' . str_pad(rand(0, 99999999), 8, '0', STR_PAD_LEFT);
         }
-
+    
         $customer = new Customer(); 
-        $customer->user_id =  $user->id;
-        // $customer->customer_group_id ="26";
-        $customer->dealer_number =$randomNumber;
+        $customer->user_id = $user->id;
+        $customer->dealer_number = $randomNumber;
         $customer->company_name = $request->company_name;
         $customer->address = $request->address;
         $customer->representative_name = $request->representative_name;
-        // $customer->showroom = $request->showroom;
         $customer->contact_number = $request->contact_number;
-        // $customer->domenstic_lines = $request->domenstic_lines;
         $customer->email = $request->email;
-        // $customer->import_lines = $request->import_lines;
         $customer->fax = $request->fax;
-        // $customer->date_business_started = $request->date_business_started;
-        // $customer->showroom_sq = $request->showroom_sq;
-        // $customer->annual_cabinet_sales = $request->annual_cabinet_sales;
         $customer->city = $request->city;
         $customer->state = $request->state;
-        if($request->hasfile('company_logo'))
-        {
+    
+        // Upload company logo
+        if ($request->hasFile('company_logo')) {
             $file = $request->file('company_logo');
             $extension = $file->getClientOriginalExtension();
-            $filename = rand().'.'.$extension;
-
+            $filename = rand() . '.' . $extension;
+    
             if (!in_array(strtolower($extension), ['jpg', 'jpeg', 'png'])) {
                 return back()->withErrors(['company_logo' => 'Only JPG and PNG files are allowed.']);
             }
-        
-            $file->move('public/img/companyLogo',$filename);
-            $customer->company_logo=$filename;
-
+    
+            $file->move('public/img/companyLogo', $filename);
+            $customer->company_logo = $filename;
         }
-
+    
         $customer->owner_name = $request->owner_name;
         $customer->owner_address = $request->owner_address;
         $customer->owner_phone = $request->owner_phone;
@@ -131,7 +125,7 @@ class CustomerManagementController extends BaseController {
         $customer->owner_state = $request->owner_state;
         $customer->owner_zip = $request->owner_zip;
         $customer->owner_email = $request->owner_email;
-
+    
         $customer->reference_com_name = $request->reference_com_name;
         $customer->reference_address = $request->reference_address;
         $customer->reference_contact_number = $request->reference_contact_number;
@@ -141,35 +135,40 @@ class CustomerManagementController extends BaseController {
         $customer->reference_email = $request->reference_email;
         $customer->account_type = $request->account_type;
         $customer->status = $request->status;
-
+    
         $customer->tex_exempt = $request->tex_exempt;
-        if($request->tex_exempt == "Yes")
-        {
-        $customer->tex_id = $request->tex_id;
-        if($request->hasfile('tex_exempt_form'))
-        {
-            $file = $request->file('tex_exempt_form');
+    
+        // Tax Exempt form
+        if ($request->tex_exempt == "Yes") {
+            $customer->tex_id = $request->tex_id;
+    
+            if ($request->hasFile('tex_exempt_form')) {
+                $file = $request->file('tex_exempt_form');
+                $extension = $file->getClientOriginalExtension();
+                $filename1 = rand() . '.' . $extension;
+                $file->move('public/img/texExemptForm', $filename1);
+                $customer->tex_exempt_form = $filename1;
+            }
+        }
+    
+        // Sales Certificate form
+        if ($request->hasFile('sales_form')) {
+            $file = $request->file('sales_form');
             $extension = $file->getClientOriginalExtension();
-            $filename1 = rand().'.'.$extension;
-            $file->move('public/img/texExemptForm',$filename1);
-            $customer->tex_exempt_form=$filename1;
-
+            $filename2 = rand() . '.' . $extension;
+            $file->move('public/img/salesCertificate', $filename2);
+            $customer->sales_form = $filename2; 
+        }
+    
+        $customer->created_by = Auth::user() ? Auth::user()->id : 1;
+    
+        if ($customer->save()) {
+            return redirect('/admin/customers')->with('success', 'Customer Added Successfully');
+        } else {
+            return redirect('/admin/customers')->with('error', 'Error: Something went wrong. Please try again.');
         }
     }
-       if(Auth::user() != "")
-       {  
-         $customer->created_by =Auth::user()->id ;
-       }else{
-        $customer->created_by = 1 ;
-       }
-
-       if($customer->save()){
-        return redirect('/admin/customers')->with('success','Customer Added Successfully');
-       }else{
-        return redirect('/admin/customers')->with('error', 'Error: Something went wrong. Please try again.');
-       }
-           
-        }
+    
       
     public function destroy($id)
      {

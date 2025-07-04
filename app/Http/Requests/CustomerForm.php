@@ -35,12 +35,12 @@ class CustomerForm extends FormRequest
                 'owner_phone' => 'required|digits:10|regex:/^([0-9]*)$/',
                 'owner_email' => 'required|email',
                 'tex_exempt' => 'required',
-                'email' => 'required|email|unique:customer,email',
+                'email' => 'required|email',
             ];
 
             if ($this->input('tex_exempt') == 'Yes') {
                 $rules['tex_id'] = 'required';
-                $rules['sales_form'] = 'required|file|mimes:pdf,jpg,jpeg,png';
+                $rules['sales_form'] = 'required';
             }
 
             if ($this->input('reference_contact_number') != '') {
@@ -58,14 +58,14 @@ class CustomerForm extends FormRequest
                 'owner_phone' => 'required|digits:10|regex:/^([0-9]*)$/',
                 'owner_email' => 'required|email',
                 'tex_exempt' => 'required',
-                'email' => 'required|email|unique:customer,email',
+                'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:8',
                 'confirm_password' => 'required|same:password',
             ];
 
             if ($this->input('tex_exempt') == 'Yes') {
                 $rules['tex_id'] = 'required';
-                $rules['sales_form'] = 'required|file|mimes:pdf,jpg,jpeg,png';
+                $rules['sales_form'] = 'required';
             }
 
             if ($this->input('reference_contact_number') != '') {
@@ -110,7 +110,6 @@ class CustomerForm extends FormRequest
             'confirm_password.required' => 'Please enter Confirm Password',
             'confirm_password.same' => 'The Confirm Password and Password must match',
             'fax.min' => 'The fax must  be greater than 6 digit',
-            'email.unique' => 'This email is already used. Please use a different one.',
             // 'showroom_sq.required'=>'Please enter Showroom SQ FT',
             // 'showroom_sq.numeric' => 'The Showroom SQ FT must be a number',
             // 'dealer_com_name.required'=>'Please enter Dealer Company Name',
