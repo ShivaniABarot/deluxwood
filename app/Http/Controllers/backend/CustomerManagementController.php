@@ -188,7 +188,6 @@ class CustomerManagementController extends BaseController {
             return response()->json(['message' => ' Something went wrong. Please try again.']);   
         }
          echo json_encode($json);
-       
     }
     public function edit($id) {
         $pagename = "Customer Edit";
