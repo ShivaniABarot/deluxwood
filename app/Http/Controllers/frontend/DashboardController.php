@@ -384,20 +384,58 @@ class DashboardController extends Controller
     public function showProduct(Request $request, $customer_draft_Id)
     {
         $pagename = "add draft";
+    
+        // Get draft style(s) for the given draft ID
         $draft_style = CustomerDraftStyle::where('customer_draft_Id', $customer_draft_Id)->get();
+    
+        // Redirect to door-style page if no draft style found
         if ($draft_style->isEmpty()) {
             return redirect('door-style/' . $customer_draft_Id);
         }
-        $user = Auth::user()->id;
-
-     $customerDraft = CustomerDraft::where('customer_draft_Id', $customer_draft_Id)->first();
-        $serviceType = $customerDraft->service_type;
-        $configuration = $customerDraft->configuration;
-
-
-
-        return view('frontend.draft.add_cart', compact('draft_style', 'customer_draft_Id', 'serviceType', 'configuration', 'pagename', 'customerDraft'));
+    
+        // Get the logged-in user ID
+        $user = Auth::id();
+    
+        // Fetch products with related product_item and product_master data
+        $products = DB::table('draft_product')
+            ->leftJoin('product_item', 'draft_product.product_id', '=', 'product_item.product_id')
+            ->leftJoin('product_master', 'product_master.product_id', '=', 'draft_product.product_id')
+            ->where('draft_product.customer_draft_id', $customer_draft_Id)
+            ->where('draft_product.customer_id', $user)
+            ->select(
+                'draft_product.*',
+                'product_master.*',
+                'product_item.product_item_sku as product_item_sku',
+                'product_item.hinge_side as is_hinge_side',
+                'product_item.finish_side as is_finish_side',
+                'product_item.product_item_price as product_item_price'
+            )
+            ->get();
+    
+        // Get the customer draft record
+        $customer_draft = CustomerDraft::where('customer_draft_Id', $customer_draft_Id)->first();
+    
+        // Optionally handle if draft not found (safety)
+        if (!$customer_draft) {
+            return redirect()->back()->with('error', 'Customer draft not found.');
+        }
+    
+        // Extract individual fields
+        $serviceType = $customer_draft->service_type;
+        $configuration = $customer_draft->configuration;
+    
+        // Return view with all data
+        return view('frontend.draft.add_cart', compact(
+            'draft_style',
+            'customer_draft_Id',
+            'serviceType',
+            'configuration',
+            'pagename',
+            'customer_draft',
+            'products'
+        ));
     }
+    
 
 
     public function doorStyle($id)
@@ -3160,6 +3198,23 @@ class DashboardController extends Controller
     }
 
 
+    public function addToCartView()
+    {
+        
+        $cartItems = DB::table('draft_products')
+            ->join('product_master', 'product_master.id', '=', 'draft_products.product_id')
+            ->join('draft_styles', 'draft_styles.id', '=', 'draft_products.draft_style_id')
+            ->select(
+                'draft_products.id as draft_product_id',
+                'product_master.id as product_id',
+                'draft_styles.id as draft_style_id',
+                'product_master.name as product_name',
+                'product_master.sku as product_sku',
+                'draft_products.quantity'
+            )
+            ->where('draft_products.user_id', Auth::id())
+            ->get();
+    
+        return view('frontend.draft.add_cart', ['cartItems' => $cartItems]);
+    }
 }
-
-

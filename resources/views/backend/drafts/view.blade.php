@@ -378,56 +378,31 @@
                             </div>
                         </div>
                         <div class="checkout-total ms-auto">
-                            <div class="single-total">
-                                <p class="value">Item Price:</p>
-                                <p class="price">${{ number_format($ItemtotalPrice, 2) }}</p>
-                            </div>
-                            <div class="single-total">
-                                <p class="value">Subtotal</p>
-                                <p class="price">${{ number_format($sub_total, 2) }}</p>
-                            </div>
-                            @if ($configurationDiscountSum > 0)
-                                <div class="single-total">
-                                    <p class="value">Unassembled Discount:</p>
-                                    <p class="price">{{ $unassembled_discount->unassembled_discount ?? 0 }}%</p>
-                                </div>
-                            @endif
-                            @if (!empty($customer_draft->discount))
-                                <div class="single-total">
-                                    <p class="value">Total Discount:</p>
-                                    <p class="price">{{ $customer_draft->discount }}%</p>
-                                </div>
-                            @endif
-                            @php
-                                $discountedPrice = $sub_total; 
-                                if ($configurationDiscountSum > 0) {
-                                    $discountedPrice -= $configurationDiscountSum;
-                                }   
-                                $groupDiscount = $discountedPrice * (($customer_draft->discount ?? 0) / 100);
-                                $discountedPrice -= $groupDiscount; 
-
-                                $taxGroupDiscount = 0;
-                                if ($customer_draft->service_type === "Self Pickup") {
-                                    $taxGroupDiscount = $discountedPrice * ($taxRate / 100);
-                                } elseif (in_array($customer_draft->service_type, ["Curbside Delivery", "Other"])) {
-                                    $taxRate = $customer_draft->zipcode_tax_rate ?? 0;
-                                    $taxGroupDiscount = $discountedPrice * ($taxRate / 100);
-                                }
-
-                                $discountedPrice += number_format($taxGroupDiscount, 2, '.', '');
-                                $discountedPrice += $shippingCost;
-                            @endphp
-                            @if (isset($taxGroup->tax_group) && $taxGroup->tax_group === "With Tax")
-                                <div class="single-total">
-                                    <p class="value">Tax:</p>
-                                    <p class="price">{{ $taxRate }}%</p>
-                                </div>
-                            @endif
-                            <div class="single-total total-payable">
-                                <p class="value">Total:</p>
-                                <p class="price">${{ number_format($discountedPrice, 2) }}</p>
-                            </div>
-                        </div>
+    <div class="single-total">
+        <p class="value">Item Price:</p>
+        <p class="price">${{ number_format($ItemtotalPrice, 2) }}</p>
+    </div>
+    <div class="single-total">
+        <p class="value">Subtotal</p>
+        <p class="price">${{ number_format($sub_total, 2) }}</p>
+    </div>
+    @if ($configurationDiscountSum > 0)
+        <div class="single-total">
+            <p class="value">Unassembled Discount:</p>
+            <p class="price">{{ number_format($unassembled_discount->unassembled_discount ?? 0, 2) }}%</p>
+        </div>
+    @endif
+    @if (isset($taxRate) && $taxRate > 0)
+        <div class="single-total">
+            <p class="value">Tax:</p>
+            <p class="price">{{ number_format($taxRate, 2) }}%</p>
+        </div>
+    @endif
+    <div class="single-total total-payable">
+        <p class="value">Total:</p>
+        <p class="price">${{ number_format($discountedPrice, 2) }}</p>
+    </div>
+</div>
                     </div>
                 </div>
             </div>

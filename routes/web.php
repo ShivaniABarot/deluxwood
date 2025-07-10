@@ -108,7 +108,7 @@ Route::group(['middleware' => ['auth', 'isCustomer']], function () {
 	Route::get('customer-draft-edit/{id}', [App\Http\Controllers\frontend\DraftController::class, 'edit']);
 	Route::post('customer-draft-edit/update/{id}', [App\Http\Controllers\frontend\DraftController::class, 'update']);
 	Route::post('draft/duplicate/{id}', [App\Http\Controllers\frontend\DashboardController::class, 'duplicate'])->name('draft.duplicate');
-	// Route::get('/new-draft/{customer_draft_Id}', [App\Http\Controllers\frontend\DashboardController::class, 'showProduct'])->name('new-draft');
+	Route::get('/new-draft/{customer_draft_Id}', [App\Http\Controllers\frontend\DashboardController::class, 'showProduct'])->name('new-draft');
 	Route::get('/draft-product/delete/{id}', '\App\Http\Controllers\frontend\DashboardController@draft_product_destroy')->name('draft-product-delete');
 	Route::POST('/draft-product/store/{customer_draft_id}', [App\Http\Controllers\frontend\DashboardController::class, 'draft_product_store'])->name('draft-product-store');
 	Route::get('/add-finish-side', [App\Http\Controllers\frontend\DashboardController::class, 'add_finish_side'])->name('add-finish-side');
@@ -493,7 +493,7 @@ Route::group(['middleware' => ['auth', 'isAdmin']], function () {
 		Route::get('admin/draft-view/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'view'])->name('admin.draft.view');
 
 		// Define missing routes to prevent 404 errors from redirects
-		// Route::get('new-draft/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'newDraft'])->name('admin.draft.new');
+		Route::get('new-draft/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'newDraft'])->name('admin.draft.new');
 		// Route::get('tracking-status/view/{customer_draft_id}', [App\Http\Controllers\backend\AdminDraftsController::class, 'trackingStatus'])->name('admin.draft.tracking');
 
 
